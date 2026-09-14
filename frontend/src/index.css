@@ -1,51 +1,53 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg-core: #0b0f17;
-  --bg-card: #131b26;
-  --bg-elev: #1a2433;
-  --bg-inset: #080b10;
-  --border-subtle: #223147;
-  --border-strong: #324866;
-  --orange: #ff5f15;
-  --orange-hover: #e64f0a;
-  --orange-active: #cc4405;
-  --text: #f8fafc;
-  --text-2: #94a3b8;
-  --text-3: #64748b;
+  --bg-core: #12110f;
+  --bg-card: #1c1a17;
+  --bg-elev: #24211d;
+  --bg-inset: #0d0c0a;
+  --border: #2b2823;
+  --bone: #f5f1ea;
+  --blue: #2f7de1;
+  --green: #2eb872;
+  --amber: #e0a238;
+  --red: #e04838;
+  --text: #f0eae2;
+  --text-2: #a39990;
+  --text-3: #6e675f;
 }
 
 @layer base {
   :root {
-    --background: 218 30% 7%;
-    --foreground: 210 40% 98%;
-    --card: 217 30% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217 30% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 18 100% 54%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 30% 15%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 30% 15%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 18 100% 54%;
+    --background: 30 6% 6%;
+    --foreground: 33 20% 93%;
+    --card: 30 8% 10%;
+    --card-foreground: 33 20% 93%;
+    --popover: 30 8% 10%;
+    --popover-foreground: 33 20% 93%;
+    --primary: 33 40% 94%;
+    --primary-foreground: 30 6% 7%;
+    --secondary: 30 8% 14%;
+    --secondary-foreground: 33 20% 93%;
+    --muted: 30 8% 14%;
+    --muted-foreground: 28 10% 60%;
+    --accent: 211 74% 53%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 217 32% 21%;
-    --input: 217 32% 21%;
-    --ring: 18 100% 54%;
+    --destructive: 6 72% 55%;
+    --destructive-foreground: 33 20% 93%;
+    --border: 30 9% 15%;
+    --input: 30 9% 15%;
+    --ring: 211 74% 53%;
     --radius: 0.5rem;
   }
 }
 
 * {
-  border-color: hsl(var(--border));
+  border-color: var(--border);
+  box-shadow: none !important;
 }
 
 html,
@@ -59,24 +61,138 @@ body,
 
 body {
   margin: 0;
-  font-family: "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif;
-  font-feature-settings: "cv02", "cv04", "cv11";
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 ::selection {
-  background: var(--orange);
+  background: var(--blue);
   color: #fff;
 }
 
+a {
+  color: var(--blue);
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* one industrial sans; tabular figures for numbers */
 .font-industrial {
-  font-family: "Barlow Condensed", "Oswald", "DIN Alternate", ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.02em;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .font-mono-num {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  font-feature-settings: "tnum";
+  letter-spacing: 0;
+}
+
+/* ---------- component classes ---------- */
+.tap-min {
+  min-height: 48px;
+}
+
+.btn-bone {
+  min-height: 48px;
+  background: var(--bone);
+  color: #12110f;
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+.btn-bone:hover {
+  background: #ffffff;
+}
+.btn-bone:active {
+  background: #e6dfd2;
+}
+.btn-bone:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-elev {
+  min-height: 48px;
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.btn-elev:hover {
+  border-color: var(--blue);
+}
+
+.input-field {
+  width: 100%;
+  min-height: 48px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 15px;
+  padding: 0 14px;
+  border-radius: 8px;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+.input-field::placeholder {
+  color: var(--text-3);
+}
+.input-field:focus {
+  border-color: var(--blue);
+}
+
+.label-up {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+.surface-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* status pills — filled, readable contrast, no border */
+.pill-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 6px;
+  border: none;
 }
 
 /* scrollbar */
@@ -88,19 +204,8 @@ body {
   background: var(--bg-inset);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: var(--border);
   border-radius: 4px;
-}
-
-/* util */
-.tap-min {
-  min-height: 48px;
-}
-.money-hero {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-variant-numeric: tabular-nums;
-  font-weight: 800;
-  letter-spacing: -0.02em;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -110,4 +215,30 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* ---------- print: quote document ---------- */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .quote-doc,
+  .quote-doc * {
+    visibility: visible;
+  }
+  .quote-doc {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+  .quote-no-print {
+    display: none !important;
+  }
+}
+@page {
+  size: Letter;
+  margin: 0.5in;
 }

@@ -1,316 +1,303 @@
 {
   "theme": "dark",
-  "design_concept": "Rugged Field Utility / Industrial High-Visibility",
-  "design_archetype": "ARCHETYPE 4: Swiss & High-Contrast meets Performance Pro (Tactical Jobsite Utility)",
-  "emotional_tone": "Built for high-glare sunlight and dusty thumbs. Direct, high-contrast, zero-fuss paperwork weapon for contractors standing in boots on a active jobsite.",
+  "design_concept": "Utilitarian Contractor Paperwork Engine (Field-Service High Glare)",
+  "design_archetype": "ARCHETYPE 4: Swiss & High-Contrast (Utilitarian Precision)",
+  "emotional_tone": "Built to be read in direct harsh daylight on a jobsite phone with dusty thumbs or work gloves. Sturdy, monolithic, utilitarian, zero consumer-app fluff.",
   "user_context": {
-    "viewport_primary": "390px (iPhone 14/15/16 Pro portrait width)",
-    "viewport_widen_strategy": "Single column mobile core (max-w-md mx-auto) on mobile; on desktop (md: and lg:), containers widen gracefully into a max-w-5xl layout with 2-column tactical panels without altering the data architecture.",
-    "touch_target_rule": "Strict minimum 48px height for all buttons, inputs, tabs, and list rows (touchable with work gloves or dirty hands).",
-    "primary_demo_trade": "Interior & Exterior Painting (seed with real Sherwin-Williams/Benjamin Moore paints, spray rig setup, drywall prep, exterior trim, pressure washing)"
+    "viewport_primary": "390px (mobile-first single column, touch-friendly min-h-[48px])",
+    "viewport_widen_strategy": "Mobile single column (max-w-md mx-auto) widening to desktop max-w-5xl with balanced utilitarian grid layouts without altering data flow or routes.",
+    "touch_target_rule": "Strict min-height 48px on all interactive elements: buttons, inputs, tabs, row items, status selectors.",
+    "trade_context": "Solo contractors and small trade crews managing estimates, logs, receipts, client histories, and rate cards."
   },
   "forbidden_styles": [
-    "No gradients anywhere (no gradient buttons, no gradient backgrounds, no gradient text)",
-    "No stock illustrations or SVG cartoon characters",
-    "No emoji characters in UI labels, badges, or buttons",
-    "No centered hero cards or marketing fluff",
-    "No transparent backgrounds on headers, navigation, dialogs, dropdowns, or overlays",
-    "No Inter for main headings or monetary displays (use heavy industrial sans)",
-    "No soft pastel borders or low-contrast muted gray text"
+    "No gradients anywhere (no gradient buttons, no gradient overlays, no gradient text)",
+    "No drop shadows anywhere (box-shadow is completely disabled/removed)",
+    "No rounded corners larger than 8px (max border-radius 8px for inputs and buttons; 6px recommended for status pills and compact elements)",
+    "No cards on non-discrete objects (card styling ONLY on discrete objects like jobs or client records)",
+    "No borders that do not separate two genuinely distinct things",
+    "No emoji or decorative stock icons anywhere in labels, badges, or buttons",
+    "No orange or hues outside the defined 7-color palette",
+    "No Inter for headings or numerals",
+    "No separate monospace font for numbers — use single industrial sans with tabular-nums",
+    "No body text below 15px",
+    "No transparent background in header, nav, dialogs, dropdowns, or overlays"
   ],
   "typography": {
-    "font_family_headings": "Barlow Condensed, Oswald, 'DIN Alternate', ui-sans-serif, system-ui, sans-serif",
-    "font_family_body": "Inter, 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    "font_family_numbers": "'JetBrains Mono', 'Roboto Mono', ui-monospace, monospace",
-    "money_rule": "Money is ALWAYS the largest visual element in any summary card or header. Numbers must be rendered with tabular figures (tabular-nums font-mono) with high-contrast Safety Orange or Crisp High-Contrast White.",
+    "font_family_chosen": "IBM Plex Sans",
+    "font_family_justification": "IBM Plex Sans is an authentic industrial grotesque engineered specifically for high legibility, technical documentation, and mechanical clarity. Unlike condensed poster faces (which fail body legibility at 15px) or playful rounded typefaces, IBM Plex Sans excels uniformly across giant hero dollar displays (32-36px), readable body text (15-16px), and dense table rows. When paired with 'font-variant-numeric: tabular-nums; font-feature-settings: \"tnum\";', its figures are strictly monospaced and align columns flawlessly.",
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap",
+    "font_family_css": "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    "rules": {
+      "single_family_throughout": "All headings, body text, buttons, labels, and numbers use IBM Plex Sans.",
+      "tabular_nums_rule": "All numeric figures, dollar amounts, hours, rates, dates, and percentages must have tabular-nums applied ('tabular-nums' class or inline font-variant-numeric: tabular-nums).",
+      "dollar_hierarchy_rule": "Dollar amounts are the LARGEST text on any screen they appear on: Job totals and profit figures at 28-36px minimum; hero money at 32-36px; card money at 24-28px.",
+      "label_rule": "Labels above numbers are small (11-12px), uppercase, letter-spaced (tracking-wider or tracking-widest), and secondary warm grey (#A39990).",
+      "body_text_rule": "Body text is never below 15px (15px to 16px), leading-relaxed, in primary warm grey (#F0EAE2) or secondary warm grey (#A39990)."
+    },
     "scale": {
-      "money_display_hero": "text-4xl sm:text-5xl font-black tracking-tight font-mono text-[#FF5F15]",
-      "money_card_primary": "text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-white",
-      "h1_screen_title": "text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-100",
-      "h2_section_title": "text-lg sm:text-xl font-bold uppercase tracking-wider text-slate-300",
-      "h3_card_title": "text-base sm:text-lg font-bold uppercase tracking-wide text-slate-200",
-      "body_regular": "text-sm sm:text-base font-normal text-slate-300 leading-normal",
-      "caption_utility": "text-xs font-semibold uppercase tracking-widest text-slate-400 font-mono",
-      "badge_text": "text-xs font-bold uppercase tracking-wider px-2 py-1"
+      "money_display_hero": "text-3xl sm:text-4xl font-bold tracking-tight tabular-nums",
+      "money_card_primary": "text-2xl font-bold tracking-tight tabular-nums",
+      "money_table_row": "text-lg font-semibold tabular-nums",
+      "h1_screen_title": "text-2xl sm:text-3xl font-bold uppercase tracking-wide text-[#F0EAE2]",
+      "h2_section_title": "text-lg sm:text-xl font-bold uppercase tracking-wider text-[#F0EAE2]",
+      "h3_card_title": "text-base font-semibold text-[#F0EAE2]",
+      "body_regular": "text-[15px] sm:text-base font-normal text-[#F0EAE2] leading-normal",
+      "body_secondary": "text-[15px] font-normal text-[#A39990] leading-normal",
+      "caption_label": "text-xs font-semibold uppercase tracking-[0.12em] text-[#A39990]",
+      "stat_tile_label": "text-xs font-semibold uppercase tracking-[0.14em] text-[#A39990]"
     }
   },
   "colors": {
-    "background_core": "#0B0F17",
-    "surface_cards": "#131B26",
-    "surface_elevated": "#1A2433",
-    "surface_inset": "#080B10",
-    "border_subtle": "#223147",
-    "border_strong": "#324866",
-    "border_focus": "#FF5F15",
-    "accent_primary_safety_orange": "#FF5F15",
-    "accent_primary_hover": "#E64F0A",
-    "accent_primary_active": "#CC4405",
-    "text_primary": "#F8FAFC",
-    "text_secondary": "#94A3B8",
-    "text_muted": "#64748B",
-    "status_colors": {
-      "lead": {
-        "bg": "#1E293B",
-        "border": "#475569",
-        "text": "#E2E8F0",
-        "label": "Lead"
+    "background_core": "#12110F",
+    "surface_elevated": "#1C1A17",
+    "text_primary": "#F0EAE2",
+    "text_secondary": "#A39990",
+    "action_primary_bone": "#F5F1EA",
+    "action_primary_text": "#12110F",
+    "accent_signal_blue": "#2F7DE1",
+    "accent_signal_blue_hover": "#2568BD",
+    "border_subtle": "#2E2A24",
+    "border_strong": "#3D3830",
+    "profit_semantics": {
+      "healthy": {
+        "hex": "#2EB872",
+        "description": "Green for healthy profit margin (profit_pct >= 20%)."
       },
-      "estimated": {
-        "bg": "#1E293B",
-        "border": "#3B82F6",
-        "text": "#93C5FD",
-        "label": "Estimated"
+      "thin": {
+        "hex": "#E0A238",
+        "description": "Amber for thin profit margin (profit_pct >= 5% and < 20%)."
       },
-      "approved": {
-        "bg": "#064E3B",
-        "border": "#10B981",
-        "text": "#6EE7B7",
-        "label": "Approved"
-      },
-      "in_progress": {
-        "bg": "#431407",
-        "border": "#FF5F15",
-        "text": "#FFB088",
-        "label": "In Progress"
-      },
-      "complete": {
-        "bg": "#14332B",
-        "border": "#059669",
-        "text": "#A7F3D0",
-        "label": "Complete"
-      },
-      "invoiced": {
-        "bg": "#312E81",
-        "border": "#6366F1",
-        "text": "#C7D2FE",
-        "label": "Invoiced"
-      },
-      "paid": {
-        "bg": "#064E3B",
-        "border": "#22C55E",
-        "text": "#86EFAC",
-        "label": "Paid"
+      "losing": {
+        "hex": "#E04838",
+        "description": "Red for losing money or negative margin (profit_pct < 5% or negative profit)."
       }
     },
-    "alert_destructive": "#EF4444",
-    "alert_warning": "#F59E0B",
-    "profit_positive": "#22C55E",
-    "profit_negative": "#EF4444"
+    "job_status_pill_system": {
+      "rules": "Built strictly from the allowed palette (near-black, elevated surface, bone, signal blue, profit green/amber/red). Status pills are solid filled shapes with readable contrast, not outlined text.",
+      "statuses": {
+        "Lead": {
+          "bg": "#1C1A17",
+          "text": "#A39990",
+          "border": "#3D3830",
+          "tailwind": "bg-[#1C1A17] text-[#A39990] border border-[#3D3830]"
+        },
+        "Estimated": {
+          "bg": "#1C1A17",
+          "text": "#F0EAE2",
+          "border": "#2F7DE1",
+          "tailwind": "bg-[#1C1A17] text-[#F0EAE2] border border-[#2F7DE1]"
+        },
+        "Approved": {
+          "bg": "#2F7DE1",
+          "text": "#F5F1EA",
+          "border": "#2F7DE1",
+          "tailwind": "bg-[#2F7DE1] text-[#F5F1EA] border border-[#2F7DE1]"
+        },
+        "In Progress": {
+          "bg": "#2F7DE1",
+          "text": "#F5F1EA",
+          "border": "#2F7DE1",
+          "tailwind": "bg-[#2F7DE1] text-[#F5F1EA] border border-[#2F7DE1]"
+        },
+        "Complete": {
+          "bg": "#2EB872",
+          "text": "#12110F",
+          "border": "#2EB872",
+          "tailwind": "bg-[#2EB872] text-[#12110F] border border-[#2EB872]"
+        },
+        "Invoiced": {
+          "bg": "#F5F1EA",
+          "text": "#12110F",
+          "border": "#F5F1EA",
+          "tailwind": "bg-[#F5F1EA] text-[#12110F] border border-[#F5F1EA]"
+        },
+        "Paid": {
+          "bg": "#2EB872",
+          "text": "#12110F",
+          "border": "#2EB872",
+          "tailwind": "bg-[#2EB872] text-[#12110F] border border-[#2EB872]"
+        }
+      }
+    }
+  },
+  "spacing_scale": {
+    "system": "Strict scale: 4px, 8px, 12px, 16px, 24px, 32px, 48px",
+    "tailwind_mapping": {
+      "4px": "p-1 / gap-1 / m-1",
+      "8px": "p-2 / gap-2 / m-2",
+      "12px": "p-3 / gap-3 / m-3",
+      "16px": "p-4 / gap-4 / m-4",
+      "24px": "p-6 / gap-6 / m-6",
+      "32px": "p-8 / gap-8 / m-8",
+      "48px": "p-12 / gap-12 / m-12"
+    },
+    "touch_targets": "min-h-[48px] on all clickable items, inputs, and tabs"
   },
   "layout_rules": {
     "viewport_structure": {
-      "mobile": "w-full max-w-md mx-auto min-h-screen pb-24 px-4 pt-3 flex flex-col",
-      "desktop": "md:max-w-5xl md:mx-auto md:px-6 md:pb-16 md:pt-6",
-      "app_wrapper": "bg-[#0B0F17] text-[#F8FAFC] min-h-screen selection:bg-[#FF5F15] selection:text-white"
-    },
-    "navigation": {
-      "mobile_bottom_bar": "fixed bottom-0 left-0 right-0 z-50 bg-[#131B26] border-t border-[#223147] px-3 py-2 flex items-center justify-around max-w-md mx-auto md:max-w-none shadow-2xl",
-      "mobile_bottom_item": "flex flex-col items-center justify-center min-w-[56px] min-h-[48px] px-2 py-1 rounded-md text-xs font-mono font-medium transition-colors duration-150 active:bg-[#1A2433]",
-      "desktop_top_bar": "hidden md:flex items-center justify-between border-b border-[#223147] bg-[#131B26] px-6 py-3.5 mb-6 sticky top-0 z-50 shadow-md",
-      "quick_action_fab": "fixed bottom-20 right-4 md:right-8 md:bottom-8 z-40 bg-[#FF5F15] hover:bg-[#E64F0A] text-white p-4 rounded-full shadow-lg border border-[#FF8F57] flex items-center justify-center min-w-[56px] min-h-[56px] transition-transform active:scale-95"
+      "mobile": "w-full max-w-md mx-auto min-h-screen px-4 pt-4 pb-28 flex flex-col bg-[#12110F] text-[#F0EAE2]",
+      "desktop": "md:max-w-5xl md:mx-auto md:px-8 md:pt-6 md:pb-16",
+      "app_wrapper": "bg-[#12110F] text-[#F0EAE2] min-h-screen"
     },
     "header": {
-      "style": "bg-[#131B26] border-b border-[#223147] px-4 py-3 sticky top-0 z-40 flex items-center justify-between",
-      "logo_text": "text-xl font-black uppercase tracking-wider text-white flex items-center gap-2",
-      "safety_mark": "w-3 h-3 bg-[#FF5F15] rounded-none rotate-45 inline-block"
+      "style": "bg-[#1C1A17] border-b border-[#2E2A24] px-4 py-3 sticky top-0 z-40",
+      "inner": "max-w-md md:max-w-5xl mx-auto flex items-center justify-between",
+      "logo_text": "text-xl font-bold tracking-tight text-[#F0EAE2] uppercase",
+      "logout_button": "tap-min px-3 text-[#A39990] hover:text-[#F0EAE2] flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider"
+    },
+    "navigation": {
+      "mobile_bottom_bar": "md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1C1A17] border-t border-[#2E2A24]",
+      "mobile_bottom_item": "flex flex-col items-center justify-center min-w-[56px] min-h-[48px] px-2 py-1 text-xs font-semibold uppercase tracking-wider transition-colors",
+      "mobile_active_state": "text-[#2F7DE1]",
+      "mobile_inactive_state": "text-[#A39990]",
+      "desktop_top_bar": "hidden md:block bg-[#1C1A17] border-b border-[#2E2A24]",
+      "desktop_nav_item": "px-5 py-3.5 text-sm font-semibold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-colors",
+      "desktop_active_state": "text-[#2F7DE1] border-[#2F7DE1]",
+      "desktop_inactive_state": "text-[#A39990] border-transparent hover:text-[#F0EAE2]"
     }
   },
   "component_guidelines": {
     "buttons": {
-      "primary": "w-full min-h-[52px] bg-[#FF5F15] hover:bg-[#E64F0A] active:bg-[#CC4405] text-white font-bold text-base uppercase tracking-wider rounded-md border border-[#FF8F57]/40 flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-      "secondary": "w-full min-h-[48px] bg-[#1A2433] hover:bg-[#223147] active:bg-[#0B0F17] text-slate-100 font-semibold text-sm uppercase tracking-wide rounded-md border border-[#324866] flex items-center justify-center gap-2 transition-colors",
-      "ghost": "min-h-[44px] bg-transparent hover:bg-[#1A2433] text-slate-300 hover:text-white font-medium text-sm px-3 rounded-md transition-colors flex items-center gap-1.5",
-      "icon_action": "min-w-[48px] min-h-[48px] p-2 bg-[#1A2433] hover:bg-[#223147] text-slate-200 hover:text-white rounded-md border border-[#324866] flex items-center justify-center"
+      "primary": "min-h-[48px] bg-[#F5F1EA] hover:bg-[#EAE4DC] active:bg-[#DFD8CE] text-[#12110F] font-bold text-[15px] uppercase tracking-wider rounded-[8px] px-5 flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-0",
+      "secondary": "min-h-[48px] bg-[#1C1A17] hover:bg-[#25221F] text-[#F5F1EA] border border-[#3D3830] font-semibold text-[15px] uppercase tracking-wider rounded-[8px] px-4 flex items-center justify-center gap-2 transition-colors",
+      "ghost": "min-h-[48px] bg-transparent hover:bg-[#1C1A17] text-[#A39990] hover:text-[#F0EAE2] font-semibold text-[15px] px-3 rounded-[8px] transition-colors flex items-center gap-1.5",
+      "destructive": "min-h-[48px] bg-[#1C1A17] hover:bg-[#25221F] text-[#E04838] border border-[#E04838]/40 font-semibold text-[15px] rounded-[8px] px-3 transition-colors flex items-center justify-center"
     },
     "inputs": {
-      "text": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-base px-3.5 py-2.5 rounded-md placeholder:text-slate-500 font-sans outline-none",
-      "number": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-lg font-mono px-3.5 py-2.5 rounded-md outline-none tabular-nums",
-      "select": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] text-white text-base px-3.5 py-2.5 rounded-md outline-none",
-      "label": "block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5"
+      "text": "w-full min-h-[48px] bg-[#12110F] border border-[#3D3830] text-[#F0EAE2] text-[15px] px-3.5 py-2.5 rounded-[8px] placeholder:text-[#A39990]/50 outline-none focus:border-[#2F7DE1] focus:ring-2 focus:ring-[#2F7DE1] transition-colors",
+      "number": "w-full min-h-[48px] bg-[#12110F] border border-[#3D3830] text-[#F0EAE2] text-[16px] tabular-nums px-3.5 py-2.5 rounded-[8px] outline-none focus:border-[#2F7DE1] focus:ring-2 focus:ring-[#2F7DE1] transition-colors",
+      "select": "w-full min-h-[48px] bg-[#12110F] border border-[#3D3830] text-[#F0EAE2] text-[15px] px-3.5 py-2.5 rounded-[8px] outline-none focus:border-[#2F7DE1] focus:ring-2 focus:ring-[#2F7DE1]",
+      "textarea": "w-full bg-[#12110F] border border-[#3D3830] text-[#F0EAE2] text-[15px] px-3.5 py-2.5 rounded-[8px] placeholder:text-[#A39990]/50 outline-none focus:border-[#2F7DE1] focus:ring-2 focus:ring-[#2F7DE1]",
+      "label": "block text-xs font-semibold uppercase tracking-[0.12em] text-[#A39990] mb-2"
     },
-    "cards": {
-      "base": "bg-[#131B26] border border-[#223147] rounded-md p-4 mb-3 transition-colors",
-      "interactive": "bg-[#131B26] border border-[#223147] hover:border-[#324866] active:border-[#FF5F15] rounded-md p-4 mb-3 cursor-pointer transition-colors",
-      "stat_tile": "bg-[#131B26] border border-[#223147] p-3.5 rounded-md flex flex-col justify-between"
+    "stat_tiles": {
+      "rule": "Stat tiles show the number large with a small uppercase label above it — NO icons, NO borders, separated by whitespace alone.",
+      "container": "grid grid-cols-2 md:grid-cols-4 gap-6 p-0 bg-transparent border-0",
+      "tile_item": "flex flex-col justify-start border-0 p-0 bg-transparent space-y-1",
+      "label": "text-xs font-semibold uppercase tracking-[0.14em] text-[#A39990]",
+      "value_primary": "text-3xl sm:text-4xl font-bold tracking-tight text-[#F0EAE2] tabular-nums leading-none",
+      "value_profit_healthy": "text-3xl sm:text-4xl font-bold tracking-tight text-[#2EB872] tabular-nums leading-none",
+      "value_profit_thin": "text-3xl sm:text-4xl font-bold tracking-tight text-[#E0A238] tabular-nums leading-none",
+      "value_profit_losing": "text-3xl sm:text-4xl font-bold tracking-tight text-[#E04838] tabular-nums leading-none"
+    },
+    "job_card": {
+      "rule": "A job card reads strictly in sequence: 1) Client name large, 2) Address small and secondary, 3) Money figures large, 4) Status pill filled. No drop shadow, subtle border only (#2E2A24).",
+      "container": "block bg-[#1C1A17] border border-[#2E2A24] hover:border-[#3D3830] rounded-[8px] p-4 transition-colors",
+      "header_row": "flex items-start justify-between gap-3 mb-3",
+      "client_name": "text-lg font-bold text-[#F0EAE2] tracking-normal",
+      "address": "text-xs text-[#A39990] mt-1 flex items-center gap-1.5",
+      "money_row": "grid grid-cols-3 gap-3 pt-3 border-t border-[#2E2A24]",
+      "contract_total": "text-2xl font-bold text-[#F0EAE2] tabular-nums",
+      "costs_to_date": "text-xl font-semibold text-[#A39990] tabular-nums",
+      "profit_value": "text-xl font-semibold tabular-nums"
+    },
+    "status_pills": {
+      "rule": "Filled shapes with readable contrast, rounded-[6px], not outlined text.",
+      "classes": "inline-flex items-center px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-[6px]"
     },
     "tabs": {
-      "container": "w-full grid grid-cols-3 bg-[#080B10] border border-[#223147] p-1 rounded-md mb-4",
-      "tab_item": "min-h-[44px] flex items-center justify-center font-mono text-xs uppercase tracking-wider font-bold rounded transition-colors text-slate-400 data-[state=active]:bg-[#1A2433] data-[state=active]:text-[#FF5F15] data-[state=active]:border data-[state=active]:border-[#FF5F15]/40"
+      "container": "w-full grid grid-cols-3 bg-[#12110F] border border-[#2E2A24] p-1 rounded-[8px] mb-4",
+      "trigger": "min-h-[44px] flex items-center justify-center text-xs font-bold uppercase tracking-wider rounded-[6px] transition-colors text-[#A39990] data-[state=active]:bg-[#1C1A17] data-[state=active]:text-[#2F7DE1] data-[state=active]:border data-[state=active]:border-[#2F7DE1]/40"
     }
   },
   "screens_specification": {
-    "1_dashboard": {
-      "screen_name": "Field Dashboard",
-      "route": "/dashboard or /",
-      "summary_tiles_spec": {
-        "description": "Four prominent stat tiles arranged 2x2 on mobile, 4x1 on desktop.",
-        "tiles": [
-          {
-            "id": "open_estimates",
-            "label": "OPEN ESTIMATES",
-            "format": "currency",
-            "emphasis": "secondary",
-            "subtext": "3 pending approval"
-          },
-          {
-            "id": "approved_work",
-            "label": "APPROVED WORK",
-            "format": "currency",
-            "emphasis": "primary_highlight",
-            "subtext": "Committed pipeline"
-          },
-          {
-            "id": "unbilled_expenses",
-            "label": "UNBILLED EXPENSES",
-            "format": "currency",
-            "emphasis": "warning",
-            "subtext": "Receipts needing billing"
-          },
-          {
-            "id": "profit_this_month",
-            "label": "PROFIT THIS MONTH",
-            "format": "currency_plus_percentage",
-            "emphasis": "success",
-            "subtext": "Net margin after expenses"
-          }
-        ]
-      },
-      "pipeline_groups": {
-        "description": "Jobs grouped by status tab or collapsible vertical sections: Lead, Estimated, Approved, In Progress, Complete, Invoiced, Paid.",
-        "job_card_layout": [
-          "Status Pill Badge top-right (e.g. IN PROGRESS with Safety Orange border)",
-          "Job Title (bold uppercase, 18px)",
-          "Client Name & Jobsite Physical Address with quick Google Maps navigation link / icon",
-          "Prominent Split Metric Bar: Left = CONTRACT TOTAL ($ large white mono), Middle = COSTS TO DATE ($ slate-300), Right = PROFIT ($ & % in green/red)",
-          "Last active field log excerpt or date stamp"
-        ]
-      }
+    "1_login": {
+      "screen_name": "Authentication (Sign in & Shop Setup)",
+      "route": "/login",
+      "background": "#12110F",
+      "surface": "#1C1A17",
+      "primary_action": "Solid bone button (#F5F1EA) with #12110F text and 52px height",
+      "secondary_toggle": "Text link in Signal Blue (#2F7DE1)",
+      "inputs": "Elevated or core input with #3D3830 border and 2px #2F7DE1 focus ring"
     },
-    "2_job_detail": {
-      "screen_name": "Job Command Detail",
+    "2_dashboard": {
+      "screen_name": "Paperwork Command Dashboard",
+      "route": "/",
+      "header_cta": "New Job button styled as primary action in solid bone (#F5F1EA) with near-black text",
+      "stat_tiles_layout": "4 tiles separated by whitespace alone (no borders, no cards, no icons): Open Estimates, Approved Work, Unbilled Expenses, Profit This Month.",
+      "job_groups": "Grouped by status: Lead, Estimated, Approved, In Progress, Complete, Invoiced, Paid. Each card follows: client name (large) -> address (small secondary) -> money (largest) -> status pill (filled)."
+    },
+    "3_job_detail": {
+      "screen_name": "Job Detail (Estimate, Field Log, Expenses)",
       "route": "/jobs/:id",
-      "header_spec": {
-        "job_title": "text-2xl font-black uppercase text-white",
-        "client_name": "text-base font-medium text-slate-300",
-        "address": "text-sm text-slate-400 font-mono",
-        "status_picker": "Full-width select or tap-to-cycle status bar with 7 statuses",
-        "quick_phone_call_action": "Tap to call client (tel: link) with min-h-[48px] target",
-        "hero_cover_photo": "Optional jobsite cover photo aspect-ratio [16/9] with overlay"
-      },
-      "tabs_structure": [
-        {
-          "tab_id": "estimate",
-          "label": "ESTIMATE",
-          "content": "Line items table/list (paint gallons, labor hours, pressure washing, masking tape). Unit qty x rate = line total. Inline add line item. Subtotal, Tax toggle, Grand Total in giant orange mono numbers. Button: 'Send / Share Estimate' & 'Convert to Invoiced'."
-        },
-        {
-          "tab_id": "log",
-          "label": "FIELD LOG",
-          "content": "Chronological field logs. Quick photo upload input (simulated camera capture), timestamped notes (e.g. 'Completed 2 coats primer in master bed, dry time 3 hrs'). Quick voice/text log entry form with date/crew tags. Hours entry sub-tab for crew hours tracking."
-        },
-        {
-          "tab_id": "expenses",
-          "label": "EXPENSES",
-          "content": "Receipt photo thumbnail, vendor (Sherwin-Williams, Home Depot, Sunbelt Rentals), date, amount, category (Materials, Labor, Equipment, Disposal). Big metric at top: Total Job Cost vs Budgeted Cost."
-        }
-      ]
+      "header_card": "Discrete object in #1C1A17 with #2E2A24 border. Displays job number, title, client name, address, tap-to-call link in Signal Blue (#2F7DE1), and status pill dropdown.",
+      "metric_pills": "Contract total, costs to date, and profit figure with margin % (healthy green >=20%, thin amber 5-19%, losing red <5%).",
+      "tabs": "Tabs in #12110F with #1C1A17 active state and #2F7DE1 text/indicator.",
+      "estimate_tab": "Table/list with tabular numerals. Grand total displayed in hero money format (32-36px). Save button in solid bone (#F5F1EA).",
+      "log_tab": "Field log timestamped notes with camera upload button. Crew hours collapsible list.",
+      "expenses_tab": "Total costs hero number, expense log form with receipt attachment, and line list."
     },
-    "3_clients": {
-      "screen_name": "Clients & History",
-      "route": "/clients",
-      "list_view": "Alphabetical or recent list of clients. Quick search bar by name or street address. Tap to call or tap to open client detail.",
-      "detail_view": {
-        "contact_block": "Client name, phone with direct tap-to-call, email with mailto, property address",
-        "all_jobs_history": "History of jobs for this client with dates, status badge, and total revenue billed",
-        "client_lifetime_value": "Big mono number: TOTAL REVENUE COLLECTED"
-      }
+    "4_clients": {
+      "screen_name": "Clients Directory & History",
+      "route": "/clients and /clients/:id",
+      "list_items": "Client cards in #1C1A17 with #2E2A24 border. Direct call button in Signal Blue (#2F7DE1).",
+      "lifetime_revenue_card": "Shows lifetime paid revenue in 36px tabular figures."
     },
-    "4_rate_card": {
-      "screen_name": "Rate Card (Field Pricing Engine)",
+    "5_rate_card": {
+      "screen_name": "Rate Card (Inline-Editable Pricing Engine)",
       "route": "/rate-card",
-      "description": "Inline-editable list with 25 pre-seeded items for the painting demo. Instant edit of unit price and unit type.",
-      "columns_mobile_friendly": [
-        "Item Name (e.g. Interior Wall 2-Coat Paint, Drywall Patching)",
-        "Category Pill (Labor, Material, Equipment, Disposal)",
-        "Unit (hr, sq ft, lin ft, each, day)",
-        "Unit Price ($ editable input with instant recalculation)"
-      ],
-      "quick_seed_categories": [
-        "Labor: Master Painter Hourly ($65/hr), Prep & Masking ($45/hr), Drywall Repair ($75/hr), Spray Rig Operator ($80/hr)",
-        "Materials: Premium Acrylic Latex ($68/gal), High-Hide Primer ($42/gal), Blue Painter Tape 1.5in ($9.50/each), Masking Plastic 12ft roll ($34/each), Caulk Elastomeric ($7.25/each)",
-        "Equipment: Graco Airless Sprayer Daily ($120/day), 28ft Extension Ladder ($35/day), Scaffold Tower ($95/day)",
-        "Disposal: Paint Hazardous Waste Disposal ($45/each), Debris Dump Fee ($110/load)"
-      ]
+      "table_layout": "Categorized sections (labor, material, equipment, disposal). Inline-editable item names and tabular numeric price fields.",
+      "unconfirmed_banner": "Amber-tinted warning notice using #E0A238 and #1C1A17 background.",
+      "actions": "Checkmark button confirms price (turns #2EB872 when confirmed)."
     },
-    "5_settings": {
-      "screen_name": "Company Profile & Paperwork Settings",
+    "6_settings": {
+      "screen_name": "Company Profile & Invoicing Rules",
       "route": "/settings",
-      "form_fields": [
-        "Business Name (e.g. Apex High-Grade Painting & Trades)",
-        "Company Logo Upload / Preview",
-        "Owner Name, Phone, Email, Physical Yard Address",
-        "Contractor License Number (e.g. CSLB #1084920)",
-        "Default Tax Rate % (e.g. 8.25%)",
-        "Payment Instructions & Terms (e.g. '50% deposit upon approval, balance due upon final walkthrough. Zelle / Check / ACH accepted.')"
-      ]
-    }
-  },
-  "curated_image_assets": {
-    "job_cover_paint_roller": {
-      "url": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwyfHxob3VzZSUyMHBhaW50aW5nJTIwY29udHJhY3RvcnxlbnwwfHx8fDE3ODk0MTY1ODV8MA&ixlib=rb-4.1.0&q=85",
-      "description": "Paint roller applying blue paint to smooth drywall on jobsite",
-      "suggested_use": "Job cover photo for interior repaint jobs and demo profile"
-    },
-    "job_cover_ladder_interior": {
-      "url": "https://images.unsplash.com/photo-1717281234297-3def5ae3eee1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwzfHxob3VzZSUyMHBhaW50aW5nJTIwY29udHJhY3RvcnxlbnwwfHx8fDE3ODk0MTY1ODV8MA&ixlib=rb-4.1.0&q=85",
-      "description": "Tradesman painter on scaffold ladder in white overalls",
-      "suggested_use": "Primary demo job cover photo for 'Highland Park Whole House Interior'"
-    },
-    "field_log_renovation_site": {
-      "url": "https://images.unsplash.com/photo-1618832515490-e181c4794a45?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxob21lJTIwcmVub3ZhdGlvbiUyMGludGVyaW9yJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzg5NDE2NjMzfDA&ixlib=rb-4.1.0&q=85",
-      "description": "Kitchen cabinets masked with plastic and brown kraft paper",
-      "suggested_use": "Field log photo for masking & prep phase"
-    },
-    "receipt_sample_materials": {
-      "url": "https://images.unsplash.com/photo-1599619585752-c3edb42a414c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxob21lJTIwcmVub3ZhdGlvbiUyMGludGVyaW9yJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzg5NDE2NjMzfDA&ixlib=rb-4.1.0&q=85",
-      "description": "Paint roller with red handle and paint tray",
-      "suggested_use": "Receipt & materials expense demonstration thumbnail"
+      "form_card": "#1C1A17 surface with #2E2A24 border. Logo upload square, business inputs, tax rate, payment instructions.",
+      "save_button": "Solid bone primary action button (#F5F1EA) with #12110F text."
     }
   },
   "testing_attributes": {
-    "rule": "Every button, input, tab, card, status badge, and monetary field MUST have a clear data-testid attribute in kebab-case.",
-    "examples": [
+    "rule": "Every button, input, tab, card, status badge, and monetary field MUST retain or include its kebab-case data-testid attribute.",
+    "required_testids": [
       "data-testid=\"login-submit-button\"",
-      "data-testid=\"nav-dashboard-link\"",
-      "data-testid=\"nav-jobs-link\"",
-      "data-testid=\"nav-clients-link\"",
-      "data-testid=\"nav-ratecard-link\"",
-      "data-testid=\"nav-settings-link\"",
+      "data-testid=\"toggle-auth-mode\"",
+      "data-testid=\"login-email-input\"",
+      "data-testid=\"login-password-input\"",
+      "data-testid=\"register-business-input\"",
+      "data-testid=\"logout-button\"",
+      "data-testid=\"nav-dashboard-desktop\"",
+      "data-testid=\"nav-dashboard-mobile\"",
+      "data-testid=\"create-job-button\"",
       "data-testid=\"stat-open-estimates-amount\"",
       "data-testid=\"stat-approved-work-amount\"",
       "data-testid=\"stat-unbilled-expenses-amount\"",
       "data-testid=\"stat-profit-month-amount\"",
-      "data-testid=\"create-job-button\"",
       "data-testid=\"job-card-{id}\"",
       "data-testid=\"job-status-badge\"",
       "data-testid=\"job-contract-total\"",
+      "data-testid=\"client-call-button\"",
+      "data-testid=\"status-picker\"",
       "data-testid=\"tab-estimate-trigger\"",
       "data-testid=\"tab-log-trigger\"",
       "data-testid=\"tab-expenses-trigger\"",
-      "data-testid=\"add-line-item-button\"",
       "data-testid=\"estimate-grand-total\"",
+      "data-testid=\"save-estimate-button\"",
+      "data-testid=\"add-line-item-button\"",
       "data-testid=\"rate-item-price-input-{id}\"",
-      "data-testid=\"client-call-button\""
+      "data-testid=\"rate-confirm-{id}\"",
+      "data-testid=\"new-client-button\"",
+      "data-testid=\"save-settings-button\""
     ]
   },
   "instructions_to_main_agent": [
-    "Strictly honor the dark slate (#0B0F17, #131B26) + Safety Orange (#FF5F15) palette. Never add pastel gradients or light purple SaaS colors.",
-    "Mobile-first: Keep the core layout single-column centered at max-w-md on mobile so phone users holding a device with one hand have natural thumb access. On md: breakpoints, let the container widen to max-w-5xl with a clean two-column split.",
-    "No emojis anywhere in labels or badges. Use Lucide icons: Phone, MapPin, Plus, DollarSign, Calendar, Camera, FileText, CheckCircle2, AlertTriangle, Layers, Building, Clock.",
-    "Ensure all buttons and inputs have at least 48px height for easy tapping with dirty hands or gloves.",
-    "Ensure complete state persistence via LocalStorage or backend API so the user can add jobs, edit rate card prices inline, add field log notes with photos, log receipts, and see instant live calculations on the Dashboard tiles.",
-    "Seed high-fidelity Painting trade data right from the start (20+ realistic paint line items, 4 realistic painting jobs across different status stages: In Progress, Lead, Approved, Paid) so the app immediately feels lived-in and professional.",
-    "Include quick mock photo capture/upload so clicking 'Add Photo' lets the contractor upload from their phone camera or select existing job photos seamlessly.",
-    "Money values must use US Dollar format ($X,XXX.XX) with bold tabular figures."
-  ]
+    "Strictly honor the user's exact color specifications: Near-black background (#12110F), elevated surfaces (#1C1A17), primary warm grey text (#F0EAE2), secondary warm grey text (#A39990).",
+    "Primary button must be SOLID BONE (#F5F1EA) with near-black text (#12110F). It is the highest-emphasis element on any screen. Do NOT use Signal Blue for primary buttons.",
+    "Signal blue (#2F7DE1) is the interactive accent ONLY: links, active tab indicator, active bottom nav icon, focus rings (2px blue), checkbox/toggle on-states, and chart marks. Never use bone for links.",
+    "Profit margin colors: Green (#2EB872) for healthy margin (>= 20%), Amber (#E0A238) for thin margin (5-19%), Red (#E04838) for losing money (< 5% or negative profit). No orange, and NO other hue outside this palette anywhere.",
+    "Typography: Use ONE single industrial sans throughout ('IBM Plex Sans'). Remove the condensed font Barlow and remove JetBrains Mono. Set all numeric amounts with tabular-nums so columns and dollar figures align.",
+    "Dollar amounts must be the largest text on any screen they appear on: job totals and profit figures at 28-36px minimum.",
+    "Stat tiles on the dashboard: show the number large with a small uppercase label above it — NO icons, NO borders, separated by whitespace alone.",
+    "Job cards: Must follow the exact order: client name (large) -> address (small secondary) -> money figures (largest) -> status pill (filled). Subtle border only (#2E2A24). No drop shadows.",
+    "Remove all drop shadows, all gradients, rounded corners larger than 8px (max 8px, 6px for pills), and all emoji.",
+    "Vertical spacing scale: strictly 4, 8, 12, 16, 24, 32, 48px. Tap targets at least 48px tall.",
+    "Do NOT alter any routes, API calls, data structures, or state logic. This is purely a design system replacement pass."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "do_not_add_gradients": "Gradients are strictly prohibited across buttons, cards, headers, and backgrounds.",
+    "do_not_add_shadows": "Drop shadows are completely forbidden. Rely on surface contrast (#12110F vs #1C1A17) and 1px crisp borders (#2E2A24).",
+    "respect_contrast": "Ensure #F0EAE2 and #A39990 text meet high-contrast accessibility standards on both #12110F and #1C1A17 surfaces.",
+    "preserve_testids": "Never remove, rename, or omit data-testid attributes from components.",
+    "touch_accessibility": "Maintain min-h-[48px] on all clickable items for one-handed operation on mobile devices in outdoor field environments."
+  }
 }

@@ -16,12 +16,20 @@ export const usDate = (iso) => {
 
 export const STATUSES = ["Lead", "Estimated", "Approved", "In Progress", "Complete", "Invoiced", "Paid"];
 
+// Filled pill styles (bg + text). No borders. Only the allowed palette.
 export const STATUS_STYLE = {
-  Lead: "bg-slate-800 border-slate-500 text-slate-200",
-  Estimated: "bg-slate-900 border-blue-500 text-blue-300",
-  Approved: "bg-emerald-950 border-emerald-500 text-emerald-300",
-  "In Progress": "bg-orange-950 border-[#FF5F15] text-orange-200",
-  Complete: "bg-emerald-950 border-emerald-600 text-emerald-200",
-  Invoiced: "bg-indigo-950 border-indigo-500 text-indigo-200",
-  Paid: "bg-emerald-900 border-green-500 text-green-200",
+  Lead: { bg: "#24211D", text: "#A39990" },
+  Estimated: { bg: "#2F7DE1", text: "#FFFFFF" },
+  Approved: { bg: "#F5F1EA", text: "#12110F" },
+  "In Progress": { bg: "#F5F1EA", text: "#12110F" },
+  Complete: { bg: "#2EB872", text: "#FFFFFF" },
+  Invoiced: { bg: "#2F7DE1", text: "#FFFFFF" },
+  Paid: { bg: "#2EB872", text: "#FFFFFF" },
+};
+
+// Profit color helper: green healthy (>=20%), amber thin (5-19%), red losing (<5%)
+export const profitColor = (profit, pct) => {
+  if (profit < 0 || pct < 5) return "var(--red)";
+  if (pct < 20) return "var(--amber)";
+  return "var(--green)";
 };

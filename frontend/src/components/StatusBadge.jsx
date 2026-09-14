@@ -5,7 +5,8 @@ export default function StatusBadge({ status, className = "" }) {
   return (
     <span
       data-testid="job-status-badge"
-      className={`inline-flex items-center px-2 py-1 text-[10px] font-bold uppercase tracking-widest border rounded-sm ${style} ${className}`}
+      className={`pill-status ${className}`}
+      style={{ background: style.bg, color: style.text }}
     >
       {status}
     </span>

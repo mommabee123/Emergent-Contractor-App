@@ -1,9 +1,12 @@
 """Jobsite backend - FastAPI + MongoDB.
 Single-user-per-account contractor paperwork app.
 """
+import base64
 import io
+import json
 import logging
 import os
+import re
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -866,6 +869,228 @@ async def dashboard_summary(user: dict = Depends(current_user)):
         "unbilled_expenses": round(unbilled_expenses, 2),
         "profit_month": round(profit_month, 2),
     }
+
+
+# ---------- Estimate from photos ----------
+
+@api.post("/transcribe")
+async def transcribe_audio(file: UploadFile = File(...), user: dict = Depends(current_user)):
+    from emergentintegrations.llm.openai import OpenAISpeechToText
+
+    data = await file.read()
+    if len(data) > 25 * 1024 * 1024:
+        raise HTTPException(400, "Audio too large (25MB max)")
+    try:
+        stt = OpenAISpeechToText(api_key=EMERGENT_KEY)
+        buf = io.BytesIO(data)
+        buf.name = file.filename or "voice.webm"
+        resp = await stt.transcribe(
+            file=buf, model="whisper-1", response_format="json", language="en",
+            prompt="Contractor describing scope of work for a construction estimate: surfaces, rooms, coats, materials, exclusions.",
+        )
+        return {"text": resp.text}
+    except Exception as e:
+        logger.error(f"transcribe failed: {e}")
+        raise HTTPException(502, "Transcription failed — please type the description instead.")
+
+
+ANALYSIS_SYSTEM = """You are a senior estimator for residential trade work (painting, drywall, roofing, landscape).
+You receive: (1) photos of a job site, (2) the contractor's own description of what the client wants done.
+Your job: identify SCOPE ONLY.
+- The DESCRIPTION defines what work is included and excluded. Respect it.
+- The PHOTOS establish condition, surfaces, materials and complications (water damage, popcorn ceiling, wallpaper, failing paint, difficult access, high ceilings).
+- If photos clearly show a surface/condition the description does not mention (e.g. popcorn ceiling when only walls were described), DO NOT silently include or omit it. Put it in "questions" with a suggested line item, and mark that item uncertain.
+- NEVER guess dimensions. NEVER guess prices. Only identify work types, surfaces, materials, conditions.
+Return ONLY valid JSON with this exact shape:
+{
+  "scope_summary": "2-4 sentence plain-English summary of the work",
+  "conditions": ["short condition strings"],
+  "items": [
+    {
+      "description": "line item description",
+      "rate_item_name": "exact name from the contractor's rate card, or null if none fits",
+      "unit": "sq ft | linear ft | each | hour | day | square | gal | load",
+      "quantity_basis": "wall_area | ceiling_area | trim_lf | fixed",
+      "quantity": 1,
+      "uncertain": false,
+      "question": null,
+      "note": "why this line exists"
+    }
+  ],
+  "assumptions": {"coats": 2, "ceiling_height_ft": 9, "materials_grade": "standard"}
+}
+Rules:
+- "rate_item_name" must be copied EXACTLY from the provided rate card list, or null.
+- "quantity_basis": wall_area for wall paint/prep lines, ceiling_area for ceiling lines, trim_lf for trim/baseboard, fixed with explicit quantity for per-unit work (cabinet doors, dumpster loads, etc.).
+- For uncertain items (question-driven): set "uncertain": true and "question": "The ceiling appears to be popcorn texture. Include ceilings in this estimate?"
+- "assumptions" values may be null if you cannot infer them."""
+
+
+@api.post("/jobs/{jid}/analyze-photos")
+async def analyze_photos(
+    jid: str,
+    photos: List[UploadFile] = File(...),
+    description: str = Form(""),
+    user: dict = Depends(current_user),
+):
+    job = await db.jobs.find_one({"id": jid, "user_id": user["id"]})
+    if not job:
+        raise HTTPException(404, "Job not found")
+    if not description.strip():
+        raise HTTPException(400, "Description is required")
+    if not (1 <= len(photos) <= 5):
+        raise HTTPException(400, "Upload between 1 and 5 photos")
+
+    # store photos + build image contents
+    from emergentintegrations.llm.chat import (ImageContent, LlmChat,
+                                               StreamDone, TextDelta,
+                                               UserMessage)
+
+    rate_items = await db.rate_items.find({"user_id": user["id"]}, {"_id": 0}).to_list(500)
+    rate_names = [r["name"] for r in rate_items]
+
+    image_contents = []
+    stored_ids = []
+    for f in photos:
+        raw = await f.read()
+        compressed = compress_image(raw)
+        file_id = new_id()
+        path = f"{APP_NAME}/uploads/{user['id']}/{file_id}.jpg"
+        res = put_object(path, compressed, "image/jpeg")
+        await db.files.insert_one({
+            "id": file_id, "user_id": user["id"], "storage_path": res["path"],
+            "thumb_path": None, "original_filename": f.filename or "photo.jpg",
+            "content_type": "image/jpeg", "size": res.get("size", len(compressed)),
+            "is_image": True, "is_deleted": False, "created_at": now_iso(),
+        })
+        stored_ids.append(file_id)
+        image_contents.append(ImageContent(image_base64=base64.b64encode(compressed).decode()))
+
+    prompt = (
+        f"CONTRACTOR'S DESCRIPTION OF THE BID:\n{description}\n\n"
+        f"CONTRACTOR'S RATE CARD (match by exact name only):\n" + "\n".join(f"- {n}" for n in rate_names) +
+        "\n\nAnalyze the attached photos and return ONLY the JSON object."
+    )
+
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_KEY,
+            session_id=f"scope-{jid}-{new_id()}",
+            system_message=ANALYSIS_SYSTEM,
+        ).with_model("openai", "gpt-5.4")
+        text = ""
+        async for ev in chat.stream_message(UserMessage(text=prompt, file_contents=image_contents)):
+            if isinstance(ev, TextDelta):
+                text += ev.content
+            elif isinstance(ev, StreamDone):
+                break
+    except Exception as e:
+        logger.error(f"analysis llm failed: {e}")
+        raise HTTPException(502, "Photo analysis failed. Check your connection and try again.")
+
+    parsed = None
+    try:
+        m = re.search(r"\{.*\}", text, re.DOTALL)
+        parsed = json.loads(m.group(0)) if m else None
+    except Exception:
+        parsed = None
+    if not parsed or "items" not in parsed:
+        logger.error(f"analysis parse failed: {text[:500]}")
+        raise HTTPException(502, "Could not read the analysis result. Try again with clearer photos.")
+
+    return {
+        "scope_summary": parsed.get("scope_summary", ""),
+        "conditions": parsed.get("conditions", []),
+        "items": parsed.get("items", []),
+        "assumptions": parsed.get("assumptions", {}),
+        "photo_ids": stored_ids,
+        "description": description,
+    }
+
+
+class ScopeItemIn(BaseModel):
+    description: str
+    rate_item_name: Optional[str] = None
+    unit: str = "sq ft"
+    quantity_basis: str = "fixed"
+    quantity: Optional[float] = None
+    note: str = ""
+
+
+class BuildEstimateIn(BaseModel):
+    items: List[ScopeItemIn]
+    wall_area: float = 0
+    ceiling_area: float = 0
+    trim_lf: float = 0
+    coats: int = 1
+
+
+def _norm(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+
+@api.post("/jobs/{jid}/build-estimate")
+async def build_estimate(jid: str, payload: BuildEstimateIn, user: dict = Depends(current_user)):
+    job = await db.jobs.find_one({"id": jid, "user_id": user["id"]})
+    if not job:
+        raise HTTPException(404, "Job not found")
+    rate_items = await db.rate_items.find({"user_id": user["id"]}, {"_id": 0}).to_list(500)
+    by_norm = {_norm(r["name"]): r for r in rate_items}
+
+    basis_map = {"wall_area": payload.wall_area, "ceiling_area": payload.ceiling_area, "trim_lf": payload.trim_lf}
+    lines = []
+    for it in payload.items:
+        dlow = it.description.lower()
+        # coat filtering
+        if "second coat" in dlow and payload.coats < 2:
+            continue
+        if "third coat" in dlow and payload.coats < 3:
+            continue
+
+        qty = None
+        if it.quantity_basis in basis_map and basis_map[it.quantity_basis] > 0:
+            qty = round(basis_map[it.quantity_basis], 2)
+        elif it.quantity:
+            qty = round(float(it.quantity), 2)
+        else:
+            qty = 0
+
+        # match to user's rate card ONLY
+        match = None
+        if it.rate_item_name:
+            match = by_norm.get(_norm(it.rate_item_name))
+        if not match and it.rate_item_name:
+            target = _norm(it.rate_item_name)
+            for k, r in by_norm.items():
+                if target and (target in k or k in target):
+                    match = r
+                    break
+
+        if match:
+            price = float(match["unit_price"])
+            lines.append({
+                "description": it.description,
+                "quantity": qty,
+                "unit": match["unit"],
+                "unit_price": price,
+                "line_total": round(qty * price, 2),
+                "needs_price": False,
+                "rate_item_id": match["id"],
+                "note": it.note,
+            })
+        else:
+            lines.append({
+                "description": it.description,
+                "quantity": qty,
+                "unit": it.unit,
+                "unit_price": 0,
+                "line_total": 0,
+                "needs_price": True,
+                "rate_item_id": None,
+                "note": it.note,
+            })
+
+    return {"line_items": lines}
 
 
 app.include_router(api)

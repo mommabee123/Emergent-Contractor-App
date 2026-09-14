@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
-import { money } from "../lib/format";
 import { Plus, Trash2, Check, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,24 +67,27 @@ export default function RateCard() {
   const unconfirmedCount = items.filter((i) => !i.confirmed).length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
-        <h1 className="font-industrial text-3xl font-black uppercase tracking-wider">Rate card</h1>
-        <p className="text-xs text-slate-400 font-mono mt-1">
+        <h1 className="font-industrial text-3xl font-bold uppercase tracking-wider">Rate card</h1>
+        <p className="text-sm text-[#A39990] mt-1">
           National-average starting points. Tap the check to confirm each one against your own numbers.
         </p>
       </div>
 
       {unconfirmedCount > 0 && (
-        <div className="bg-amber-950/40 border border-amber-700/40 rounded-md p-3 flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5" />
-          <div className="text-xs text-amber-200">
-            <span className="font-bold">{unconfirmedCount}</span> item{unconfirmedCount !== 1 && "s"} still unconfirmed. Tap the check to mark reviewed.
-          </div>
+        <div
+          className="rounded-lg p-3 flex items-start gap-2 text-sm"
+          style={{ background: "rgba(224,162,56,0.1)", border: "1px solid var(--amber)", color: "var(--amber)" }}
+        >
+          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+          <span>
+            <b>{unconfirmedCount}</b> item{unconfirmedCount !== 1 && "s"} still unconfirmed. Tap the check to mark reviewed.
+          </span>
         </div>
       )}
 
-      <form onSubmit={add} className="bg-[#131B26] border border-[#223147] rounded-md p-3">
+      <form onSubmit={add} className="surface-card">
         <div className="grid grid-cols-12 gap-2">
           <input
             required
@@ -93,22 +95,14 @@ export default function RateCard() {
             data-testid="new-rate-name"
             value={newItem.name}
             onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-            className="col-span-12 md:col-span-5 tap-min bg-[#080B10] border border-[#324866] text-white px-2.5 rounded-md text-sm"
+            className="input-field col-span-12 md:col-span-5"
           />
-          <select
-            value={newItem.category}
-            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-            className="col-span-4 md:col-span-2 tap-min bg-[#080B10] border border-[#324866] text-white px-2 rounded-md text-sm"
-          >
+          <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="input-field col-span-4 md:col-span-2">
             {CATEGORIES.map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
-          <select
-            value={newItem.unit}
-            onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-            className="col-span-4 md:col-span-2 tap-min bg-[#080B10] border border-[#324866] text-white px-2 rounded-md text-sm"
-          >
+          <select value={newItem.unit} onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })} className="input-field col-span-4 md:col-span-2">
             {UNITS.map((u) => (
               <option key={u}>{u}</option>
             ))}
@@ -121,12 +115,9 @@ export default function RateCard() {
             data-testid="new-rate-price"
             value={newItem.unit_price}
             onChange={(e) => setNewItem({ ...newItem, unit_price: e.target.value })}
-            className="col-span-4 md:col-span-2 tap-min bg-[#080B10] border border-[#324866] text-white px-2 rounded-md text-sm font-mono-num"
+            className="input-field col-span-3 md:col-span-2 font-mono-num"
           />
-          <button
-            data-testid="add-rate-button"
-            className="col-span-12 md:col-span-1 tap-min bg-[#FF5F15] hover:bg-[#E64F0A] text-white rounded-md flex items-center justify-center"
-          >
+          <button data-testid="add-rate-button" className="btn-bone col-span-12 md:col-span-1 px-0">
             <Plus className="w-4 h-4" />
           </button>
         </div>
@@ -134,29 +125,28 @@ export default function RateCard() {
 
       {CATEGORIES.map((cat) => (
         <section key={cat}>
-          <h2 className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-1.5">{cat}</h2>
-          <div className="space-y-1.5">
+          <h2 className="label-up mb-2">{cat}</h2>
+          <div className="space-y-2">
             {byCat[cat].map((it) => (
               <div
                 key={it.id}
                 data-testid={`rate-row-${it.id}`}
-                className={`bg-[#131B26] border rounded-md p-2 ${
-                  it.confirmed ? "border-[#223147]" : "border-amber-800/50"
-                }`}
+                className="surface-card !p-2.5"
+                style={!it.confirmed ? { borderColor: "var(--amber)" } : undefined}
               >
                 <div className="grid grid-cols-12 gap-2 items-center">
                   <input
                     value={it.name}
                     onChange={(e) => update(it.id, { name: e.target.value })}
-                    className="col-span-12 md:col-span-6 tap-min bg-transparent border border-transparent hover:border-[#324866] focus:border-[#FF5F15] text-white text-sm px-2 rounded outline-none"
+                    className="col-span-12 md:col-span-6 tap-min bg-transparent border border-transparent hover:border-[#2B2823] focus:border-[#2F7DE1] text-[#F0EAE2] text-[15px] px-2 rounded-lg outline-none"
                   />
                   <select
                     value={it.unit}
                     onChange={(e) => update(it.id, { unit: e.target.value })}
-                    className="col-span-4 md:col-span-2 tap-min bg-transparent border border-transparent hover:border-[#324866] text-slate-300 text-xs px-1 rounded"
+                    className="col-span-4 md:col-span-2 tap-min bg-transparent border border-transparent hover:border-[#2B2823] text-[#A39990] text-sm px-1 rounded-lg"
                   >
                     {UNITS.map((u) => (
-                      <option key={u} className="bg-[#131B26]">
+                      <option key={u} className="bg-[#1C1A17]">
                         {u}
                       </option>
                     ))}
@@ -167,23 +157,19 @@ export default function RateCard() {
                     data-testid={`rate-item-price-input-${it.id}`}
                     value={it.unit_price}
                     onChange={(e) => update(it.id, { unit_price: e.target.value })}
-                    className="col-span-5 md:col-span-2 tap-min bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] text-white font-mono-num text-sm px-2 rounded outline-none text-right"
+                    className="col-span-5 md:col-span-2 tap-min bg-[#0D0C0A] border border-[#2B2823] focus:border-[#2F7DE1] text-[#F0EAE2] font-mono-num text-sm px-2 rounded-lg outline-none text-right"
                   />
                   <div className="col-span-3 md:col-span-2 flex items-center justify-end gap-1">
                     <button
                       onClick={() => update(it.id, { confirmed: !it.confirmed })}
                       data-testid={`rate-confirm-${it.id}`}
-                      className={`tap-min w-10 flex items-center justify-center rounded ${
-                        it.confirmed ? "text-emerald-400" : "text-slate-600 hover:text-slate-300"
-                      }`}
+                      className="tap-min w-10 flex items-center justify-center rounded-lg"
+                      style={{ color: it.confirmed ? "var(--green)" : "#6E675F" }}
                       title={it.confirmed ? "Confirmed" : "Confirm price"}
                     >
                       <Check className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => remove(it.id)}
-                      className="tap-min w-10 flex items-center justify-center text-slate-500 hover:text-red-400"
-                    >
+                    <button onClick={() => remove(it.id)} className="tap-min w-10 flex items-center justify-center text-[#6E675F] hover:text-[#E04838]">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

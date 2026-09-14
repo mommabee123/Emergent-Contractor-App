@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
-import { HardHat } from "lucide-react";
 
 export default function Login() {
   const { login, register } = useAuth();
@@ -26,53 +25,49 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F17] flex flex-col">
+    <div className="min-h-screen bg-[#12110F] flex flex-col">
       <div className="max-w-md w-full mx-auto px-5 pt-16 pb-8 flex-1 flex flex-col">
-        <div className="flex items-center gap-3 mb-10">
-          <span className="w-4 h-4 bg-[#FF5F15] rotate-45 inline-block" />
-          <span className="font-industrial text-3xl font-black uppercase tracking-wider">Jobsite</span>
+        <div className="flex items-center gap-3 mb-12">
+          <span className="w-4 h-4 bg-[#F5F1EA] rotate-45 inline-block" />
+          <span className="font-industrial text-3xl font-bold uppercase tracking-wider">Jobsite</span>
         </div>
 
-        <h1 className="font-industrial text-4xl font-black uppercase tracking-wide mb-2">
+        <h1 className="font-industrial text-4xl font-bold uppercase tracking-wide mb-2">
           {mode === "login" ? "Sign in" : "Set up shop"}
         </h1>
-        <p className="text-slate-400 text-sm mb-8 font-mono">
+        <p className="text-[#A39990] text-sm mb-10">
           {mode === "login" ? "Field-ready paperwork. Every job pays." : "One user. One company. No demo data missing."}
         </p>
 
         <form onSubmit={submit} className="space-y-4">
           {mode === "register" && (
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">
-                Business name
-              </label>
+              <label className="label-up">Business name</label>
               <input
                 data-testid="register-business-input"
                 required
                 value={business}
                 onChange={(e) => setBusiness(e.target.value)}
                 placeholder="e.g. Apex Painting & Trades"
-                className="w-full tap-min bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-base px-3.5 rounded-md outline-none"
+                className="input-field"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">Email</label>
+            <label className="label-up">Email</label>
             <input
               data-testid="login-email-input"
               required
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full tap-min bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-base px-3.5 rounded-md outline-none"
+              className="input-field"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5">
-              Password
-            </label>
+            <label className="label-up">Password</label>
             <input
               data-testid="login-password-input"
               required
@@ -80,7 +75,7 @@ export default function Login() {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full tap-min bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-base px-3.5 rounded-md outline-none"
+              className="input-field"
             />
           </div>
 
@@ -88,9 +83,8 @@ export default function Login() {
             type="submit"
             data-testid="login-submit-button"
             disabled={busy}
-            className="w-full min-h-[52px] bg-[#FF5F15] hover:bg-[#E64F0A] active:bg-[#CC4405] text-white font-bold text-base uppercase tracking-wider rounded-md border border-[#FF8F57]/40 disabled:opacity-60 flex items-center justify-center gap-2"
+            className="btn-bone w-full min-h-[52px] text-base"
           >
-            <HardHat className="w-5 h-5" />
             {busy ? "Working…" : mode === "login" ? "Sign in" : "Create account"}
           </button>
         </form>
@@ -98,7 +92,8 @@ export default function Login() {
         <button
           onClick={() => setMode(mode === "login" ? "register" : "login")}
           data-testid="toggle-auth-mode"
-          className="mt-6 text-sm text-slate-400 hover:text-white font-mono"
+          className="mt-8 text-sm font-semibold"
+          style={{ color: "var(--blue)" }}
         >
           {mode === "login" ? "New here? Create an account →" : "Already registered? Sign in →"}
         </button>

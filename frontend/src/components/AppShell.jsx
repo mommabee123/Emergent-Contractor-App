@@ -20,18 +20,18 @@ export default function AppShell({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F17] text-[#F8FAFC]">
+    <div className="min-h-screen bg-[#12110F] text-[#F0EAE2]">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-[#131B26] border-b border-[#223147]">
+      <header className="sticky top-0 z-40 bg-[#1C1A17] border-b border-[#2B2823]">
         <div className="max-w-md md:max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="w-3 h-3 bg-[#FF5F15] rotate-45 inline-block" />
-            <span className="font-industrial text-2xl font-black uppercase tracking-wider">Jobsite</span>
+          <div className="flex items-center gap-3">
+            <span className="w-3 h-3 bg-[#F5F1EA] rotate-45 inline-block" />
+            <span className="font-industrial text-xl font-bold uppercase tracking-wider">Jobsite</span>
           </div>
           <button
             data-testid="logout-button"
             onClick={doLogout}
-            className="tap-min px-3 text-slate-400 hover:text-white flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider"
+            className="tap-min px-3 text-[#A39990] hover:text-[#F0EAE2] flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">{user?.email}</span>
@@ -39,8 +39,8 @@ export default function AppShell({ children }) {
         </div>
       </header>
 
-      {/* Desktop side/top nav (secondary) */}
-      <nav className="hidden md:block bg-[#131B26] border-b border-[#223147]">
+      {/* Desktop nav */}
+      <nav className="hidden md:block bg-[#1C1A17] border-b border-[#2B2823]">
         <div className="max-w-5xl mx-auto px-4 flex items-center">
           {items.map((it) => (
             <NavLink
@@ -51,8 +51,8 @@ export default function AppShell({ children }) {
               className={({ isActive }) =>
                 `px-5 py-3.5 text-sm font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 ${
                   isActive
-                    ? "text-[#FF5F15] border-[#FF5F15]"
-                    : "text-slate-400 border-transparent hover:text-white"
+                    ? "text-[#2F7DE1] border-[#2F7DE1]"
+                    : "text-[#A39990] border-transparent hover:text-[#F0EAE2]"
                 }`
               }
             >
@@ -67,7 +67,7 @@ export default function AppShell({ children }) {
       <main className="max-w-md md:max-w-5xl mx-auto px-4 md:px-6 pt-4 pb-28 md:pb-12">{children}</main>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#131B26] border-t border-[#223147]">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1C1A17] border-t border-[#2B2823]">
         <div className="max-w-md mx-auto flex items-center justify-around px-2 py-1.5">
           {items.map((it) => (
             <NavLink
@@ -76,8 +76,8 @@ export default function AppShell({ children }) {
               end={it.to === "/"}
               data-testid={it.testid + "-mobile"}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center min-w-[56px] min-h-[52px] px-1 rounded-md text-[10px] font-mono font-semibold uppercase tracking-wider ${
-                  isActive ? "text-[#FF5F15]" : "text-slate-400"
+                `flex flex-col items-center justify-center min-w-[56px] min-h-[52px] px-1 rounded-md text-[10px] font-semibold uppercase tracking-wider ${
+                  isActive ? "text-[#2F7DE1]" : "text-[#A39990]"
                 }`
               }
             >

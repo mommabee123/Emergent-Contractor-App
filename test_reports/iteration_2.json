@@ -1,0 +1,33 @@
+{
+  "summary": "Iteration 2 tested the new estimate-from-photos feature (backend + frontend) plus restyle regression. Backend: 10/10 pytest passes covering /api/transcribe (422 on missing file, 200 on real WAV), /api/jobs/{id}/analyze-photos (400 on empty description, 422 on zero photos, 200 with real JPEG returning scope_summary/items/assumptions/photo_ids), /api/jobs/{id}/build-estimate (rate-card matching, needs_price flag for unmatched, second-coat filtered at coats=1 and retained at coats=2, wall_area basis-driven qty), plus PUT /estimate + GET /jobs/{id} regressions. Frontend (390px, fresh register): job → Estimate tab → photo-estimate-button opens flow. Stage 1 (description+voice+photos+analyze) all testids present. Analyze took ~35s and reached Stage 2 with scope_summary, 2 assumed badges (height,coats), grade-select, dim inputs. Build produced 4 draft lines, all matched to rate card so needs-price handling didn't trigger via UI (needs-price code path verified via backend test with null rate_item_name). Live line-total recalc works (qty=10 dropped total from $2110.50 to $1893.50). add/remove line works. Generate quote → 816-css-width quote-document overlay with company/scope/lines/grand-total ($1,893.50)/print/close buttons; close returns to draft. No orange (#FF5F15) detected in computed styles on dashboard. Rate card page loads with all seeded items.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Quote overlay on mobile (390px viewport)", "issues": ["quote-document uses width:816 with maxWidth:'100%' → shrinks to 390px on mobile viewport instead of remaining fixed 816px with horizontal scroll. Spec says 'fixed-width 816px US Letter document'. Print output still uses .quote-doc CSS at 816px so print is correct; only the on-screen preview shrinks on mobile. Consider removing maxWidth:'100%' and wrapping in overflow-x:auto so mobile preview shows a scrollable 816px document."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_photo_estimate.py",
+    "/app/test_reports/pytest/photo_estimate.xml"
+  ],
+  "action_items": [
+    "(LOW/OPTIONAL) Remove maxWidth:'100%' on quote-document container in QuoteDoc.jsx and wrap in overflow-x:auto so on-screen preview is truly fixed 816px on mobile.",
+    "(LOW, carryover from iter_1) Hydration warning '<span> cannot be a child of <option>' still emitted from JobDetail estimate rate picker <select>."
+  ],
+  "critical_code_review_comments": [
+    "server.py analyze_photos: If len(photos)==0, FastAPI raises 422 (File(...) required) before the 1<=len<=5 check triggers 400. Behavior is acceptable but the spec asked for 400; keep note.",
+    "server.py transcribe endpoint returns 502 on any whisper failure — good graceful fallback message.",
+    "PhotoEstimate.jsx: build-estimate posts wall_area/ceiling_area/trim_lf derived from L,W,H; if L or W is 0 wallArea=0 → basis-matched items get quantity=0 with real unit_price → 'needs price' warning does NOT trigger for these (needs_price only from rate-card miss). Consider flagging zero-qty lines in UI.",
+    "PhotoEstimate.jsx applyPrice: relies on save-to-rate-card checked by default (verified via checkbox). No de-dup — if user Apply repeatedly with save checked, duplicate rate items get created. Consider PUT-if-exists or client-side de-dup.",
+    "JobDetail.jsx still uses native <select> with dynamic <span> children triggering hydration warning (from iter_1). Switch to Radix Select or plain text nodes inside <option>."
+  ],
+  "updated_files": ["/app/backend/tests/test_photo_estimate.py"],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100% critical flows"},
+  "test_credentials": "Fresh account created each run via POST /api/auth/register with qa+<ts>@example.com / password123 (see /app/memory/test_credentials.md).",
+  "seed_data_creation": "None extra — used auto-seeded 25 rate items + 4 jobs from register. Added one TEST_ rate item via test_rate_card_add_persists.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "New pytest file /app/backend/tests/test_photo_estimate.py covers photo-estimate feature end-to-end (LLM calls take ~30s). Run with: cd /app && export $(grep -v '^#' frontend/.env | xargs) && pytest backend/tests/test_photo_estimate.py -o addopts='' -v. Frontend needs-price UI branch wasn't UI-exercised because the LLM matched all 4 generated items to the seeded rate card; to force needs-price, use a description mentioning a service the rate card lacks (e.g., 'cabinet refinish and popcorn ceiling scraping') OR delete a rate item before analyzing. Backend covers the needs-price path directly. Quote-document overlay shrinks to viewport width on mobile due to maxWidth:'100%' in QuoteDoc.jsx — flag but not blocking."
+}
