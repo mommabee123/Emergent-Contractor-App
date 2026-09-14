@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-core: #0b0f17;
+  --bg-card: #131b26;
+  --bg-elev: #1a2433;
+  --bg-inset: #080b10;
+  --border-subtle: #223147;
+  --border-strong: #324866;
+  --orange: #ff5f15;
+  --orange-hover: #e64f0a;
+  --orange-active: #cc4405;
+  --text: #f8fafc;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+}
+
+@layer base {
+  :root {
+    --background: 218 30% 7%;
+    --foreground: 210 40% 98%;
+    --card: 217 30% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 30% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 18 100% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 30% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 30% 15%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 18 100% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 32% 21%;
+    --input: 217 32% 21%;
+    --ring: 18 100% 54%;
+    --radius: 0.5rem;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html,
+body,
+#root {
+  background: var(--bg-core);
+  color: var(--text);
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv02", "cv04", "cv11";
+}
+
+::selection {
+  background: var(--orange);
+  color: #fff;
+}
+
+.font-industrial {
+  font-family: "Barlow Condensed", "Oswald", "DIN Alternate", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.font-mono-num {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-inset);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+
+/* util */
+.tap-min {
+  min-height: 48px;
+}
+.money-hero {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

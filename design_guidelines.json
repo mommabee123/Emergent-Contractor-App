@@ -1,0 +1,316 @@
+{
+  "theme": "dark",
+  "design_concept": "Rugged Field Utility / Industrial High-Visibility",
+  "design_archetype": "ARCHETYPE 4: Swiss & High-Contrast meets Performance Pro (Tactical Jobsite Utility)",
+  "emotional_tone": "Built for high-glare sunlight and dusty thumbs. Direct, high-contrast, zero-fuss paperwork weapon for contractors standing in boots on a active jobsite.",
+  "user_context": {
+    "viewport_primary": "390px (iPhone 14/15/16 Pro portrait width)",
+    "viewport_widen_strategy": "Single column mobile core (max-w-md mx-auto) on mobile; on desktop (md: and lg:), containers widen gracefully into a max-w-5xl layout with 2-column tactical panels without altering the data architecture.",
+    "touch_target_rule": "Strict minimum 48px height for all buttons, inputs, tabs, and list rows (touchable with work gloves or dirty hands).",
+    "primary_demo_trade": "Interior & Exterior Painting (seed with real Sherwin-Williams/Benjamin Moore paints, spray rig setup, drywall prep, exterior trim, pressure washing)"
+  },
+  "forbidden_styles": [
+    "No gradients anywhere (no gradient buttons, no gradient backgrounds, no gradient text)",
+    "No stock illustrations or SVG cartoon characters",
+    "No emoji characters in UI labels, badges, or buttons",
+    "No centered hero cards or marketing fluff",
+    "No transparent backgrounds on headers, navigation, dialogs, dropdowns, or overlays",
+    "No Inter for main headings or monetary displays (use heavy industrial sans)",
+    "No soft pastel borders or low-contrast muted gray text"
+  ],
+  "typography": {
+    "font_family_headings": "Barlow Condensed, Oswald, 'DIN Alternate', ui-sans-serif, system-ui, sans-serif",
+    "font_family_body": "Inter, 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    "font_family_numbers": "'JetBrains Mono', 'Roboto Mono', ui-monospace, monospace",
+    "money_rule": "Money is ALWAYS the largest visual element in any summary card or header. Numbers must be rendered with tabular figures (tabular-nums font-mono) with high-contrast Safety Orange or Crisp High-Contrast White.",
+    "scale": {
+      "money_display_hero": "text-4xl sm:text-5xl font-black tracking-tight font-mono text-[#FF5F15]",
+      "money_card_primary": "text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-white",
+      "h1_screen_title": "text-2xl sm:text-3xl font-black uppercase tracking-wider text-slate-100",
+      "h2_section_title": "text-lg sm:text-xl font-bold uppercase tracking-wider text-slate-300",
+      "h3_card_title": "text-base sm:text-lg font-bold uppercase tracking-wide text-slate-200",
+      "body_regular": "text-sm sm:text-base font-normal text-slate-300 leading-normal",
+      "caption_utility": "text-xs font-semibold uppercase tracking-widest text-slate-400 font-mono",
+      "badge_text": "text-xs font-bold uppercase tracking-wider px-2 py-1"
+    }
+  },
+  "colors": {
+    "background_core": "#0B0F17",
+    "surface_cards": "#131B26",
+    "surface_elevated": "#1A2433",
+    "surface_inset": "#080B10",
+    "border_subtle": "#223147",
+    "border_strong": "#324866",
+    "border_focus": "#FF5F15",
+    "accent_primary_safety_orange": "#FF5F15",
+    "accent_primary_hover": "#E64F0A",
+    "accent_primary_active": "#CC4405",
+    "text_primary": "#F8FAFC",
+    "text_secondary": "#94A3B8",
+    "text_muted": "#64748B",
+    "status_colors": {
+      "lead": {
+        "bg": "#1E293B",
+        "border": "#475569",
+        "text": "#E2E8F0",
+        "label": "Lead"
+      },
+      "estimated": {
+        "bg": "#1E293B",
+        "border": "#3B82F6",
+        "text": "#93C5FD",
+        "label": "Estimated"
+      },
+      "approved": {
+        "bg": "#064E3B",
+        "border": "#10B981",
+        "text": "#6EE7B7",
+        "label": "Approved"
+      },
+      "in_progress": {
+        "bg": "#431407",
+        "border": "#FF5F15",
+        "text": "#FFB088",
+        "label": "In Progress"
+      },
+      "complete": {
+        "bg": "#14332B",
+        "border": "#059669",
+        "text": "#A7F3D0",
+        "label": "Complete"
+      },
+      "invoiced": {
+        "bg": "#312E81",
+        "border": "#6366F1",
+        "text": "#C7D2FE",
+        "label": "Invoiced"
+      },
+      "paid": {
+        "bg": "#064E3B",
+        "border": "#22C55E",
+        "text": "#86EFAC",
+        "label": "Paid"
+      }
+    },
+    "alert_destructive": "#EF4444",
+    "alert_warning": "#F59E0B",
+    "profit_positive": "#22C55E",
+    "profit_negative": "#EF4444"
+  },
+  "layout_rules": {
+    "viewport_structure": {
+      "mobile": "w-full max-w-md mx-auto min-h-screen pb-24 px-4 pt-3 flex flex-col",
+      "desktop": "md:max-w-5xl md:mx-auto md:px-6 md:pb-16 md:pt-6",
+      "app_wrapper": "bg-[#0B0F17] text-[#F8FAFC] min-h-screen selection:bg-[#FF5F15] selection:text-white"
+    },
+    "navigation": {
+      "mobile_bottom_bar": "fixed bottom-0 left-0 right-0 z-50 bg-[#131B26] border-t border-[#223147] px-3 py-2 flex items-center justify-around max-w-md mx-auto md:max-w-none shadow-2xl",
+      "mobile_bottom_item": "flex flex-col items-center justify-center min-w-[56px] min-h-[48px] px-2 py-1 rounded-md text-xs font-mono font-medium transition-colors duration-150 active:bg-[#1A2433]",
+      "desktop_top_bar": "hidden md:flex items-center justify-between border-b border-[#223147] bg-[#131B26] px-6 py-3.5 mb-6 sticky top-0 z-50 shadow-md",
+      "quick_action_fab": "fixed bottom-20 right-4 md:right-8 md:bottom-8 z-40 bg-[#FF5F15] hover:bg-[#E64F0A] text-white p-4 rounded-full shadow-lg border border-[#FF8F57] flex items-center justify-center min-w-[56px] min-h-[56px] transition-transform active:scale-95"
+    },
+    "header": {
+      "style": "bg-[#131B26] border-b border-[#223147] px-4 py-3 sticky top-0 z-40 flex items-center justify-between",
+      "logo_text": "text-xl font-black uppercase tracking-wider text-white flex items-center gap-2",
+      "safety_mark": "w-3 h-3 bg-[#FF5F15] rounded-none rotate-45 inline-block"
+    }
+  },
+  "component_guidelines": {
+    "buttons": {
+      "primary": "w-full min-h-[52px] bg-[#FF5F15] hover:bg-[#E64F0A] active:bg-[#CC4405] text-white font-bold text-base uppercase tracking-wider rounded-md border border-[#FF8F57]/40 flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+      "secondary": "w-full min-h-[48px] bg-[#1A2433] hover:bg-[#223147] active:bg-[#0B0F17] text-slate-100 font-semibold text-sm uppercase tracking-wide rounded-md border border-[#324866] flex items-center justify-center gap-2 transition-colors",
+      "ghost": "min-h-[44px] bg-transparent hover:bg-[#1A2433] text-slate-300 hover:text-white font-medium text-sm px-3 rounded-md transition-colors flex items-center gap-1.5",
+      "icon_action": "min-w-[48px] min-h-[48px] p-2 bg-[#1A2433] hover:bg-[#223147] text-slate-200 hover:text-white rounded-md border border-[#324866] flex items-center justify-center"
+    },
+    "inputs": {
+      "text": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-base px-3.5 py-2.5 rounded-md placeholder:text-slate-500 font-sans outline-none",
+      "number": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] focus:border-[#FF5F15] focus:ring-1 focus:ring-[#FF5F15] text-white text-lg font-mono px-3.5 py-2.5 rounded-md outline-none tabular-nums",
+      "select": "w-full min-h-[48px] bg-[#080B10] border border-[#324866] text-white text-base px-3.5 py-2.5 rounded-md outline-none",
+      "label": "block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1.5"
+    },
+    "cards": {
+      "base": "bg-[#131B26] border border-[#223147] rounded-md p-4 mb-3 transition-colors",
+      "interactive": "bg-[#131B26] border border-[#223147] hover:border-[#324866] active:border-[#FF5F15] rounded-md p-4 mb-3 cursor-pointer transition-colors",
+      "stat_tile": "bg-[#131B26] border border-[#223147] p-3.5 rounded-md flex flex-col justify-between"
+    },
+    "tabs": {
+      "container": "w-full grid grid-cols-3 bg-[#080B10] border border-[#223147] p-1 rounded-md mb-4",
+      "tab_item": "min-h-[44px] flex items-center justify-center font-mono text-xs uppercase tracking-wider font-bold rounded transition-colors text-slate-400 data-[state=active]:bg-[#1A2433] data-[state=active]:text-[#FF5F15] data-[state=active]:border data-[state=active]:border-[#FF5F15]/40"
+    }
+  },
+  "screens_specification": {
+    "1_dashboard": {
+      "screen_name": "Field Dashboard",
+      "route": "/dashboard or /",
+      "summary_tiles_spec": {
+        "description": "Four prominent stat tiles arranged 2x2 on mobile, 4x1 on desktop.",
+        "tiles": [
+          {
+            "id": "open_estimates",
+            "label": "OPEN ESTIMATES",
+            "format": "currency",
+            "emphasis": "secondary",
+            "subtext": "3 pending approval"
+          },
+          {
+            "id": "approved_work",
+            "label": "APPROVED WORK",
+            "format": "currency",
+            "emphasis": "primary_highlight",
+            "subtext": "Committed pipeline"
+          },
+          {
+            "id": "unbilled_expenses",
+            "label": "UNBILLED EXPENSES",
+            "format": "currency",
+            "emphasis": "warning",
+            "subtext": "Receipts needing billing"
+          },
+          {
+            "id": "profit_this_month",
+            "label": "PROFIT THIS MONTH",
+            "format": "currency_plus_percentage",
+            "emphasis": "success",
+            "subtext": "Net margin after expenses"
+          }
+        ]
+      },
+      "pipeline_groups": {
+        "description": "Jobs grouped by status tab or collapsible vertical sections: Lead, Estimated, Approved, In Progress, Complete, Invoiced, Paid.",
+        "job_card_layout": [
+          "Status Pill Badge top-right (e.g. IN PROGRESS with Safety Orange border)",
+          "Job Title (bold uppercase, 18px)",
+          "Client Name & Jobsite Physical Address with quick Google Maps navigation link / icon",
+          "Prominent Split Metric Bar: Left = CONTRACT TOTAL ($ large white mono), Middle = COSTS TO DATE ($ slate-300), Right = PROFIT ($ & % in green/red)",
+          "Last active field log excerpt or date stamp"
+        ]
+      }
+    },
+    "2_job_detail": {
+      "screen_name": "Job Command Detail",
+      "route": "/jobs/:id",
+      "header_spec": {
+        "job_title": "text-2xl font-black uppercase text-white",
+        "client_name": "text-base font-medium text-slate-300",
+        "address": "text-sm text-slate-400 font-mono",
+        "status_picker": "Full-width select or tap-to-cycle status bar with 7 statuses",
+        "quick_phone_call_action": "Tap to call client (tel: link) with min-h-[48px] target",
+        "hero_cover_photo": "Optional jobsite cover photo aspect-ratio [16/9] with overlay"
+      },
+      "tabs_structure": [
+        {
+          "tab_id": "estimate",
+          "label": "ESTIMATE",
+          "content": "Line items table/list (paint gallons, labor hours, pressure washing, masking tape). Unit qty x rate = line total. Inline add line item. Subtotal, Tax toggle, Grand Total in giant orange mono numbers. Button: 'Send / Share Estimate' & 'Convert to Invoiced'."
+        },
+        {
+          "tab_id": "log",
+          "label": "FIELD LOG",
+          "content": "Chronological field logs. Quick photo upload input (simulated camera capture), timestamped notes (e.g. 'Completed 2 coats primer in master bed, dry time 3 hrs'). Quick voice/text log entry form with date/crew tags. Hours entry sub-tab for crew hours tracking."
+        },
+        {
+          "tab_id": "expenses",
+          "label": "EXPENSES",
+          "content": "Receipt photo thumbnail, vendor (Sherwin-Williams, Home Depot, Sunbelt Rentals), date, amount, category (Materials, Labor, Equipment, Disposal). Big metric at top: Total Job Cost vs Budgeted Cost."
+        }
+      ]
+    },
+    "3_clients": {
+      "screen_name": "Clients & History",
+      "route": "/clients",
+      "list_view": "Alphabetical or recent list of clients. Quick search bar by name or street address. Tap to call or tap to open client detail.",
+      "detail_view": {
+        "contact_block": "Client name, phone with direct tap-to-call, email with mailto, property address",
+        "all_jobs_history": "History of jobs for this client with dates, status badge, and total revenue billed",
+        "client_lifetime_value": "Big mono number: TOTAL REVENUE COLLECTED"
+      }
+    },
+    "4_rate_card": {
+      "screen_name": "Rate Card (Field Pricing Engine)",
+      "route": "/rate-card",
+      "description": "Inline-editable list with 25 pre-seeded items for the painting demo. Instant edit of unit price and unit type.",
+      "columns_mobile_friendly": [
+        "Item Name (e.g. Interior Wall 2-Coat Paint, Drywall Patching)",
+        "Category Pill (Labor, Material, Equipment, Disposal)",
+        "Unit (hr, sq ft, lin ft, each, day)",
+        "Unit Price ($ editable input with instant recalculation)"
+      ],
+      "quick_seed_categories": [
+        "Labor: Master Painter Hourly ($65/hr), Prep & Masking ($45/hr), Drywall Repair ($75/hr), Spray Rig Operator ($80/hr)",
+        "Materials: Premium Acrylic Latex ($68/gal), High-Hide Primer ($42/gal), Blue Painter Tape 1.5in ($9.50/each), Masking Plastic 12ft roll ($34/each), Caulk Elastomeric ($7.25/each)",
+        "Equipment: Graco Airless Sprayer Daily ($120/day), 28ft Extension Ladder ($35/day), Scaffold Tower ($95/day)",
+        "Disposal: Paint Hazardous Waste Disposal ($45/each), Debris Dump Fee ($110/load)"
+      ]
+    },
+    "5_settings": {
+      "screen_name": "Company Profile & Paperwork Settings",
+      "route": "/settings",
+      "form_fields": [
+        "Business Name (e.g. Apex High-Grade Painting & Trades)",
+        "Company Logo Upload / Preview",
+        "Owner Name, Phone, Email, Physical Yard Address",
+        "Contractor License Number (e.g. CSLB #1084920)",
+        "Default Tax Rate % (e.g. 8.25%)",
+        "Payment Instructions & Terms (e.g. '50% deposit upon approval, balance due upon final walkthrough. Zelle / Check / ACH accepted.')"
+      ]
+    }
+  },
+  "curated_image_assets": {
+    "job_cover_paint_roller": {
+      "url": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwyfHxob3VzZSUyMHBhaW50aW5nJTIwY29udHJhY3RvcnxlbnwwfHx8fDE3ODk0MTY1ODV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Paint roller applying blue paint to smooth drywall on jobsite",
+      "suggested_use": "Job cover photo for interior repaint jobs and demo profile"
+    },
+    "job_cover_ladder_interior": {
+      "url": "https://images.unsplash.com/photo-1717281234297-3def5ae3eee1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwzfHxob3VzZSUyMHBhaW50aW5nJTIwY29udHJhY3RvcnxlbnwwfHx8fDE3ODk0MTY1ODV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Tradesman painter on scaffold ladder in white overalls",
+      "suggested_use": "Primary demo job cover photo for 'Highland Park Whole House Interior'"
+    },
+    "field_log_renovation_site": {
+      "url": "https://images.unsplash.com/photo-1618832515490-e181c4794a45?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxob21lJTIwcmVub3ZhdGlvbiUyMGludGVyaW9yJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzg5NDE2NjMzfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Kitchen cabinets masked with plastic and brown kraft paper",
+      "suggested_use": "Field log photo for masking & prep phase"
+    },
+    "receipt_sample_materials": {
+      "url": "https://images.unsplash.com/photo-1599619585752-c3edb42a414c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxob21lJTIwcmVub3ZhdGlvbiUyMGludGVyaW9yJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzg5NDE2NjMzfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Paint roller with red handle and paint tray",
+      "suggested_use": "Receipt & materials expense demonstration thumbnail"
+    }
+  },
+  "testing_attributes": {
+    "rule": "Every button, input, tab, card, status badge, and monetary field MUST have a clear data-testid attribute in kebab-case.",
+    "examples": [
+      "data-testid=\"login-submit-button\"",
+      "data-testid=\"nav-dashboard-link\"",
+      "data-testid=\"nav-jobs-link\"",
+      "data-testid=\"nav-clients-link\"",
+      "data-testid=\"nav-ratecard-link\"",
+      "data-testid=\"nav-settings-link\"",
+      "data-testid=\"stat-open-estimates-amount\"",
+      "data-testid=\"stat-approved-work-amount\"",
+      "data-testid=\"stat-unbilled-expenses-amount\"",
+      "data-testid=\"stat-profit-month-amount\"",
+      "data-testid=\"create-job-button\"",
+      "data-testid=\"job-card-{id}\"",
+      "data-testid=\"job-status-badge\"",
+      "data-testid=\"job-contract-total\"",
+      "data-testid=\"tab-estimate-trigger\"",
+      "data-testid=\"tab-log-trigger\"",
+      "data-testid=\"tab-expenses-trigger\"",
+      "data-testid=\"add-line-item-button\"",
+      "data-testid=\"estimate-grand-total\"",
+      "data-testid=\"rate-item-price-input-{id}\"",
+      "data-testid=\"client-call-button\""
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Strictly honor the dark slate (#0B0F17, #131B26) + Safety Orange (#FF5F15) palette. Never add pastel gradients or light purple SaaS colors.",
+    "Mobile-first: Keep the core layout single-column centered at max-w-md on mobile so phone users holding a device with one hand have natural thumb access. On md: breakpoints, let the container widen to max-w-5xl with a clean two-column split.",
+    "No emojis anywhere in labels or badges. Use Lucide icons: Phone, MapPin, Plus, DollarSign, Calendar, Camera, FileText, CheckCircle2, AlertTriangle, Layers, Building, Clock.",
+    "Ensure all buttons and inputs have at least 48px height for easy tapping with dirty hands or gloves.",
+    "Ensure complete state persistence via LocalStorage or backend API so the user can add jobs, edit rate card prices inline, add field log notes with photos, log receipts, and see instant live calculations on the Dashboard tiles.",
+    "Seed high-fidelity Painting trade data right from the start (20+ realistic paint line items, 4 realistic painting jobs across different status stages: In Progress, Lead, Approved, Paid) so the app immediately feels lived-in and professional.",
+    "Include quick mock photo capture/upload so clicking 'Add Photo' lets the contractor upload from their phone camera or select existing job photos seamlessly.",
+    "Money values must use US Dollar format ($X,XXX.XX) with bold tabular figures."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "summary": "First-finish smoke pass on Jobsite. Backend: register/login/me, jobs list w/ joined client+computed totals, dashboard summary, 25-item rate card, clients CRUD+archive, job create (auto job_number=5), estimate upsert (same id on 2nd PUT), company PUT, data isolation (different client IDs per user) all pass. Frontend (390px mobile): registration → dashboard with 4 seeded cards and correct stat tiles, job detail with tabs and estimate GT $9,575.25 matching API, save-estimate works, all 4 bottom-nav routes work.",
+  "tested_scope": ["frontend", "backend", "auth", "integration"],
+  "passed": [
+    "POST /api/auth/register returns token+user; auto-seeds 25 rate items, 3 clients, 4 jobs",
+    "GET /api/auth/me returns user with company",
+    "GET /api/jobs returns 4 jobs with client joined + contract_total/costs_to_date/profit",
+    "GET /api/dashboard/summary returns numeric fields (approved 12510.99, unbilled 1100.55, profit 1925.35)",
+    "GET /api/rate-card returns 25 items",
+    "GET /api/clients lists 3; POST /clients creates; DELETE /clients/{id} archives (excluded from list)",
+    "POST /api/jobs creates job with auto-increment job_number=5",
+    "GET /api/jobs/{id} returns joined estimate/expenses/logs/hours + costs_to_date sum",
+    "PUT /api/jobs/{id}/estimate upserts (same estimate id on 2nd PUT), correct subtotal/tax/total math",
+    "PUT /api/company persists business_name, phone, default_tax_rate",
+    "Data isolation verified: user2 has different client IDs than user1 (names identical because both seeded from same template — by design)",
+    "Frontend register flow → redirects to dashboard, renders 4 job cards, stats correct",
+    "JobDetail loads, 3 tabs render, estimate grand total matches API ($9,575.25), save-estimate succeeds (toast)",
+    "Bottom nav: /clients, /rate-card, /settings, / all navigate"
+  ],
+  "failed": [
+    {
+      "area": "frontend/JobDetail estimate rate picker",
+      "issue": "React hydration warning: <span> cannot be a child of <option>. Caused by ve dev instrumentation wrapping dynamic text in <span> inside a native <select><option>. Functional impact: none observed; noise in console only.",
+      "evidence": "Console: 'In HTML, <span> cannot be a child of <option>' during JobDetail render",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Optional (LOW): silence hydration warning by not rendering dynamic children as <span> inside native <option> in JobDetail.jsx line ~228 (or switch to Radix Select for the rate picker)."
+  ],
+  "notes": [
+    "Backend expenses/log/hours POST require `date` field (validated) — frontend forms send it correctly (verified in code).",
+    "tax_rate is a percentage number (e.g., 8.25 → 8.25%), not a fraction; consistent between seed and PUT."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}
