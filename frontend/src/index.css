@@ -242,3 +242,12 @@ input[type="number"] {
   size: Letter;
   margin: 0.5in;
 }
+
+
+/* Receipt review keeps the source photo beside editable details, even on a phone. */
+.receipt-review { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 16px; align-items: start; }
+.receipt-dialog { font-variant-numeric: tabular-nums; }
+.receipt-dialog input[type="date"] { min-width: 0; max-width: 100%; }
+@media (min-width: 768px) {
+  .receipt-review { grid-template-columns: minmax(240px, .85fr) minmax(0, 1.15fr); gap: 32px; }
+}

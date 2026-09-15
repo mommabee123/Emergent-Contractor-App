@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 3 tested Receipt capture + Expenses feature (backend + frontend). Backend: 25/25 pytest passes across two new files. Verified full chunked-upload flow (init/PUT-chunks/complete), MIME/size validation (image/gif rejected, >20 MB rejected, malformed bytes 400), main compressed + smaller thumb (/files/id?thumb=true), owner-scoped file access (foreign user 404). /receipts/analyze end-to-end round-trips with real receipt JPEG returning extracted{vendor,date,subtotal,tax,total,line_items,warnings} + suggestions{category,category_reason,job_id,ranked_jobs,job_reason}. Expenses CRUD: defaults billable=true & markup=0, unsorted flag correct, markup math 110*(1+20/100)=132.00, edit/reassign persists, delete refreshes list, legacy POST /jobs/:jid/expenses honors billable defaults, filter combos + inclusive dates + running total, bad date range 422, CSV export includes Billable/Markup/Billable amount/Line items columns and prefixes formula-leading cells with apostrophe. Unbilled Materials attachment logic verified: pre-completion expense on a job later marked Complete does NOT flag; new attachment after Complete DOES flag at markup amount; non-billable does not flag; dashboard summary exposes profit_at_risk + unbilled_materials list. Ownership denial verified for expense update/delete, legacy POST, foreign job_id filter (404), and anonymous access (401/403). Frontend @ 1920x1080 + 390x844: global capture-receipt-global button visible on all screens; ReceiptCapture dialog opens; manual-entry path works; billable-yes default selected (aria-pressed=true); live billable amount updates to $132.00 with total=110 markup=20; save unassigned closes dialog; Expenses screen shows running total, unsorted count=1, nav badge=1, bad-range inline error 'Start date must be before end date'; CSV download succeeds (719 bytes with real content). Mobile 390px dialog fits (374px wide, scrollable).",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "/api/receipts/suggestions and /api/receipts/analyze (Extraction)", "issue": "SuggestIn.date: Optional[date] and Extraction.date: Optional[date] reject any non-null ISO date with Pydantic error 'Input should be None'. Root cause: field name `date` shadows the imported `date` type in the class-body annotation → Pydantic v2 interprets the field as None-only. Impact: (1) UI 'Refresh suggestions from edited details' (receipt-refresh-suggestions) will 422 whenever a date is present, (2) AI-extracted receipt date is silently dropped to null on the analyze path (schema returned by LLM cannot round-trip through Extraction if it contains a real date). Fix: rename field to `receipt_date`, or annotate explicitly as `datetime.date`, or `date_: date = Field(alias='date')`. Reproduced with `SuggestIn(vendor='X', date='2025-01-10')` and same for `Extraction(date='2025-01-10')`. `ExpenseIn.date: date` (non-Optional) is fine.", "priority": "HIGH"}
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Refresh Suggestions", "issue": "Because backend /receipts/suggestions 422s on a real date, tapping receipt-refresh-suggestions after edits will fail whenever the date field is populated. Blocked by the HIGH backend bug above.", "affected_selectors": ["receipt-refresh-suggestions"]}
+    ],
+    "design_issues": [
+      {"screen": "ReceiptCapture dialog + Expenses filters", "issues": ["Uses native <input type='date'> (browser mm/dd/yyyy picker) instead of shadcn Calendar/Popover consistent with the rest of the design system. Same known pattern flagged in earlier iterations."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_receipts_expenses.py",
+    "/app/backend/tests/test_receipts_ai.py",
+    "/app/test_reports/pytest/receipts_expenses.xml",
+    "/app/test_reports/pytest/receipts_ai.xml"
+  ],
+  "action_items": [
+    "(HIGH) Rename or re-annotate the `date` field on SuggestIn and Extraction in /app/backend/receipt_expenses.py so Pydantic v2 does not resolve `Optional[date]` to None-only. Suggested: use `receipt_date: Optional[date] = None` with a Field(alias='date'), or refer to the type as `datetime.date` (add `import datetime` and use `Optional[datetime.date]`). Then flip the xfail-style regression test `test_bug_suggestin_optional_date_rejects_valid_iso` in /app/backend/tests/test_receipts_ai.py."
+  ],
+  "critical_code_review_comments": [
+    "receipt_expenses.py: `Optional[date]` field named `date` — Pydantic v2 anti-pattern, causes silent data loss on the AI path (extracted dates never surface in UI).",
+    "receipt_expenses.py:217 `LlmChat(...).with_model('openai', 'gpt-5.4')` — hardcoded 'gpt-5.4' model string is unusual; ensure this is correct/pinned intentionally.",
+    "Legacy POST /jobs/{jid}/expenses (server.py:753) mutates `payload.job_id = jid`; if a client also sends job_id in the body the path wins silently — acceptable but worth documenting.",
+    "receipt_expenses.py:245 correction lookup requires exactly 2 corrections with SAME category to switch suggestions; the spec says learning after TWO DISTINCT receipts same normalized vendor — verify 'distinct' is enforced via receipt IDs, not by unique date/amount. Current implementation counts by correction rows only.",
+    "server.py dashboard_summary excludes 'Paid' from profit_at_risk (only Complete/Invoiced) — matches spec (Paid excluded). Good."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_receipts_expenses.py",
+    "/app/backend/tests/test_receipts_ai.py",
+    "/app/memory/test_credentials.md"
+  ],
+  "success_rate": {"backend": "100% (25/25)", "frontend": "100% critical flows"},
+  "test_credentials": "Fresh accounts registered each run via POST /api/auth/register: qa+<epoch>+<hex>@example.com and qaai+<epoch>+<hex>@example.com and qa-ui+<epoch>@example.com — all with password `password123` and business_name 'QA Painting' / 'QA AI' / 'UI QA'. Auto-seeded 3 clients / 4 jobs / 25 rate items / pre-existing expenses per account. Documented in /app/memory/test_credentials.md.",
+  "seed_data_creation": "None beyond registration auto-seed. Test-created expenses use TEST_ prefixed vendors so they can be identified/cleaned later.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: `cd /app && export $(grep -v '^#' frontend/.env | xargs) && pytest backend/tests/test_receipts_expenses.py backend/tests/test_receipts_ai.py -o addopts='' -v`. Fast suite (~7s) plus AI (~10s). Key bug to retest after fix: the `Optional[date]` shadowing in SuggestIn/Extraction — flip `test_bug_suggestin_optional_date_rejects_valid_iso` to assert 200 once fixed. Frontend Refresh Suggestions button needs UI retest once backend is fixed. Native <input type='date'> is still in use across receipt/filter fields — cosmetic. Everything else passes.",
+  "rca of the issue": "Pydantic v2 forward-ref/local-name resolution: In a BaseModel class body, an annotation `Optional[date]` on a field also named `date` triggers Pydantic to resolve the type reference to the field itself (or a placeholder) rather than the module-scope `datetime.date` class, effectively producing a None-only schema. Reproducer: `python -c \"from receipt_expenses import SuggestIn; SuggestIn(vendor='X', date='2025-01-10')\"` → validation error `Input should be None [type=none_required]`. Same for Extraction. ExpenseIn.date: date (non-Optional) is unaffected because Pydantic treats bare `date` as the required-type annotation successfully. Mitigation: rename the field or use `datetime.date` explicitly."
+}

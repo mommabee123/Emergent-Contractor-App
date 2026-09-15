@@ -101,3 +101,12 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## Receipt capture feature — pending verification
+- Original user request: Persistent + capture from every screen; photograph/upload; AI vendor/date/subtotal/tax/total/line extraction; editable photo-side review; category/job suggestions with abstention and repeated vendor correction learning; billable default yes and markup default 0; immediate job cost/profit refresh; distinct event-driven Unbilled Materials warning and standing Profit at Risk metric; Expenses filters/running total/CSV and Unsorted badge. Follow-up: Job Expenses tab summary of total costs, billable cost+markup, non-billable. No invoice/payment creation.
+- Backend: /app/backend/receipt_expenses.py (chunk storage, image validation/compression/thumbnails, real gpt-5.4 extraction, conservative rank thresholds, user-scoped vendor learning, Expense model/CRUD/list/CSV). server.py integrates models/routes/job summaries/dashboard event warnings.
+- Frontend: ReceiptContext, ReceiptCapture, ExpenseList, Expenses; AppShell persistent capture and Expenses nav; JobDetail expenses summary; Dashboard metric/warning separation.
+- Testing priority: actual image upload + real AI extraction; save/update/unsorted; learned overrides across two DISTINCT receipts; no learning from repeatedly saving one; score abstention; user ownership for files/jobs/expenses/list/export; costs/profit with markup excluded; late assignment flag not retroactive on job status change; filters/CSV parity, CSV injection; desktop/mobile modal/nav/accessibility, failure/manual recovery. No mocked core APIs.
+- New fields need seeded historical expenses to read as billable=true, markup=0. Capture only saves on explicit confirmation.
+- Read /app/image_testing.md. Use JPEG/PNG/WebP legible receipt fixture, include totals. Binary chunks API precedes base64 LLM input.
+- Test credentials file currently contains a registration recipe, no existing account. Register QA accounts using existing auth API and write their actual email/password to /app/memory/test_credentials.md immediately. Do not modify auth implementation.

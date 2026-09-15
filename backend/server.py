@@ -21,7 +21,8 @@ from fastapi import (APIRouter, Depends, FastAPI, File, Form, Header,
                      HTTPException, Query, Response, UploadFile, status)
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from motor.motor_asyncio import AsyncIOMotorClient
-from PIL import Image
+from PIL import Image, ImageOps
+from receipt_expenses import ExpenseIn, expense_public, expense_summary, save_expense, register_receipt_routes
 from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
 from starlette.middleware.cors import CORSMiddleware
 
@@ -211,15 +212,6 @@ class EstimateIn(BaseModel):
     tax_rate: float = 0
     status: str = "draft"
     notes: str = ""
-
-
-class ExpenseIn(BaseModel):
-    vendor: str
-    date: str
-    amount: float
-    category: str = "Materials"
-    description: str = ""
-    receipt_photo_id: Optional[str] = None
 
 
 class LogEntryIn(BaseModel):
@@ -476,9 +468,7 @@ async def startup():
 # ---------- File utils ----------
 def compress_image(data: bytes, max_edge: int = 1600, quality: int = 80) -> bytes:
     try:
-        im = Image.open(io.BytesIO(data))
-        if im.mode in ("RGBA", "P"):
-            im = im.convert("RGB")
+        im = ImageOps.exif_transpose(Image.open(io.BytesIO(data))).convert("RGB")
         w, h = im.size
         long_edge = max(w, h)
         if long_edge > max_edge:
@@ -494,9 +484,7 @@ def compress_image(data: bytes, max_edge: int = 1600, quality: int = 80) -> byte
 
 def make_thumb(data: bytes, size: int = 400) -> bytes:
     try:
-        im = Image.open(io.BytesIO(data))
-        if im.mode in ("RGBA", "P"):
-            im = im.convert("RGB")
+        im = ImageOps.exif_transpose(Image.open(io.BytesIO(data))).convert("RGB")
         im.thumbnail((size, size), Image.LANCZOS)
         buf = io.BytesIO()
         im.save(buf, format="JPEG", quality=75, optimize=True)
@@ -691,7 +679,8 @@ async def get_job(jid: str, user: dict = Depends(current_user)):
     hours = await db.hours_entries.find({"user_id": user["id"], "job_id": jid}, {"_id": 0}).sort("date", -1).to_list(1000)
     job["client"] = client
     job["estimate"] = est
-    job["expenses"] = expenses
+    job["expenses"] = [expense_public(e) for e in expenses]
+    job["expense_summary"] = expense_summary(expenses)
     job["logs"] = logs
     job["hours"] = hours
     job["contract_total"] = est["total"] if est else 0
@@ -763,15 +752,15 @@ async def upsert_estimate(jid: str, payload: EstimateIn, user: dict = Depends(cu
 # ---------- Expenses ----------
 @api.post("/jobs/{jid}/expenses")
 async def add_expense(jid: str, payload: ExpenseIn, user: dict = Depends(current_user)):
-    doc = {"id": new_id(), "user_id": user["id"], "job_id": jid, **payload.model_dump(), "created_at": now_iso()}
-    await db.expenses.insert_one(doc)
-    doc.pop("_id", None)
-    return doc
+    payload.job_id = jid
+    return await save_expense(db, user["id"], payload)
 
 
 @api.delete("/expenses/{eid}")
 async def delete_expense(eid: str, user: dict = Depends(current_user)):
-    await db.expenses.delete_one({"id": eid, "user_id": user["id"]})
+    result = await db.expenses.delete_one({"id": eid, "user_id": user["id"]})
+    if not result.deleted_count:
+        raise HTTPException(404, "Expense not found")
     return {"ok": True}
 
 
@@ -841,6 +830,8 @@ async def dashboard_summary(user: dict = Depends(current_user)):
     approved_work = 0.0
     unbilled_expenses = 0.0
     profit_month = 0.0
+    profit_at_risk = 0.0
+    unbilled_materials = []
 
     now = datetime.now(timezone.utc)
     month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0).isoformat()
@@ -849,6 +840,14 @@ async def dashboard_summary(user: dict = Depends(current_user)):
         est = await db.estimates.find_one({"user_id": user["id"], "job_id": j["id"]}, {"_id": 0})
         expenses = await db.expenses.find({"user_id": user["id"], "job_id": j["id"]}, {"_id": 0}).to_list(1000)
         exp_total = sum(e["amount"] for e in expenses)
+        if est and j['status'] in ('Complete', 'Invoiced'):
+            profit_at_risk += max(0, est['total'] - exp_total)
+        for expense in expenses:
+            item = expense_public(expense)
+            if item['unbilled_materials']:
+                unbilled_materials.append({'expense_id': item['id'], 'job_id': j['id'],
+                    'job_title': j['title'], 'vendor': item['vendor'], 'amount': item['billable_amount'],
+                    'attachment_status': item['attachment_status']})
 
         if est:
             if est["status"] in ("draft", "sent"):
@@ -868,6 +867,9 @@ async def dashboard_summary(user: dict = Depends(current_user)):
         "approved_work": round(approved_work, 2),
         "unbilled_expenses": round(unbilled_expenses, 2),
         "profit_month": round(profit_month, 2),
+        "profit_at_risk": round(profit_at_risk, 2),
+        "unbilled_materials": unbilled_materials,
+        "unbilled_materials_total": round(sum(e['amount'] for e in unbilled_materials), 2),
     }
 
 
@@ -1093,6 +1095,7 @@ async def build_estimate(jid: str, payload: BuildEstimateIn, user: dict = Depend
     return {"line_items": lines}
 
 
+register_receipt_routes(api, db, current_user, put_object, get_object, compress_image, make_thumb, APP_NAME, EMERGENT_KEY)
 app.include_router(api)
 
 app.add_middleware(

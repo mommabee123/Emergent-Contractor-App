@@ -1,10 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Briefcase, Users, ListOrdered, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Briefcase, Users, ListOrdered, Settings, LogOut, Receipt } from "lucide-react";
+import { useReceipts } from "../context/ReceiptContext";
 import { useAuth } from "../context/AuthContext";
 
 const items = [
   { to: "/", label: "Board", icon: LayoutDashboard, testid: "nav-dashboard" },
   { to: "/jobs", label: "Jobs", icon: Briefcase, testid: "nav-jobs" },
+  { to: "/expenses", label: "Expenses", icon: Receipt, testid: "nav-expenses" },
   { to: "/clients", label: "Clients", icon: Users, testid: "nav-clients" },
   { to: "/rate-card", label: "Rates", icon: ListOrdered, testid: "nav-ratecard" },
   { to: "/settings", label: "Settings", icon: Settings, testid: "nav-settings" },
@@ -12,6 +14,7 @@ const items = [
 
 export default function AppShell({ children }) {
   const { user, logout } = useAuth();
+  const { unsortedCount } = useReceipts();
   const navigate = useNavigate();
 
   const doLogout = () => {
@@ -58,13 +61,14 @@ export default function AppShell({ children }) {
             >
               <it.icon className="w-4 h-4" />
               {it.label}
+              {it.to === "/expenses" && unsortedCount > 0 && <span data-testid="nav-expenses-unsorted-desktop">{unsortedCount}</span>}
             </NavLink>
           ))}
         </div>
       </nav>
 
       {/* Content */}
-      <main className="max-w-md md:max-w-5xl mx-auto px-4 md:px-6 pt-4 pb-28 md:pb-12">{children}</main>
+      <main className="max-w-md md:max-w-5xl mx-auto px-4 md:px-6 pt-4 pb-44 md:pb-28">{children}</main>
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1C1A17] border-t border-[#2B2823]">
@@ -81,7 +85,9 @@ export default function AppShell({ children }) {
                 }`
               }
             >
-              <it.icon className="w-5 h-5 mb-0.5" />
+              <span className="relative"><it.icon className="w-5 h-5 mb-0.5" />
+                {it.to === "/expenses" && unsortedCount > 0 && <span data-testid="nav-expenses-unsorted-mobile" className="absolute -right-3 -top-1 px-1 rounded bg-[#2F7DE1] text-[#F0EAE2]">{unsortedCount}</span>}
+              </span>
               {it.label}
             </NavLink>
           ))}

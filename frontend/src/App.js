@@ -10,13 +10,15 @@ import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
 import RateCard from "./pages/RateCard";
 import Settings from "./pages/Settings";
+import Expenses from "./pages/Expenses";
+import { ReceiptProvider } from "./context/ReceiptContext";
 import "./App.css";
 
 function Protected({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Loading…</div>;
   if (!user) return <Navigate to="/login" replace />;
-  return <AppShell>{children}</AppShell>;
+  return <ReceiptProvider><AppShell>{children}</AppShell></ReceiptProvider>;
 }
 
 function PublicOnly({ children }) {
@@ -39,6 +41,7 @@ export default function App() {
           <Route path="/clients" element={<Protected><Clients /></Protected>} />
           <Route path="/clients/:id" element={<Protected><ClientDetail /></Protected>} />
           <Route path="/rate-card" element={<Protected><RateCard /></Protected>} />
+          <Route path="/expenses" element={<Protected><Expenses /></Protected>} />
           <Route path="/settings" element={<Protected><Settings /></Protected>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

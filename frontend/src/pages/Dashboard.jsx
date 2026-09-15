@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { money, STATUSES, profitColor } from "../lib/format";
+import { useReceipts } from "../context/ReceiptContext";
 import StatusBadge from "../components/StatusBadge";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -11,6 +12,7 @@ export default function Dashboard() {
   const [summary, setSummary] = useState({ open_estimates: 0, approved_work: 0, unbilled_expenses: 0, profit_month: 0 });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { revision } = useReceipts();
 
   useEffect(() => {
     (async () => {
@@ -24,7 +26,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [revision]);
 
   const grouped = STATUSES.reduce((acc, s) => {
     acc[s] = jobs.filter((j) => j.status === s);
@@ -44,7 +46,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
         <StatTile testid="stat-open-estimates" label="Open Estimates" value={summary.open_estimates} />
         <StatTile testid="stat-approved-work" label="Approved Work" value={summary.approved_work} />
-        <StatTile testid="stat-unbilled-expenses" label="Unbilled Expenses" value={summary.unbilled_expenses} />
+        <StatTile testid="stat-profit-at-risk" label="Profit at Risk" value={summary.profit_at_risk} />
         <StatTile
           testid="stat-profit-month"
           label="Profit This Month"
@@ -53,6 +55,12 @@ export default function Dashboard() {
         />
       </div>
 
+      <p data-testid="profit-at-risk-explanation" className="text-[#A39990]">Profit at Risk: positive job profit tied up in work marked Complete or Invoiced, not Paid. Based on job status until invoices are introduced.</p>
+      {summary.unbilled_materials?.length > 0 && <section data-testid="unbilled-materials-warning" className="border-y border-[#3D3830] py-6 space-y-4">
+        <div className="flex flex-wrap justify-between items-start gap-3"><div><h2 className="text-lg font-bold uppercase tracking-wide">Unbilled materials</h2><p className="text-[#A39990]">Expenses added after completion or invoicing. These billable amounts could be missed.</p></div>
+          <p data-testid="unbilled-materials-amount" className="text-3xl font-bold font-mono-num">{money(summary.unbilled_materials_total)}</p></div>
+        <div className="space-y-2">{summary.unbilled_materials.map((item) => <Link data-testid={`unbilled-materials-${item.expense_id}`} key={item.expense_id} to={`/expenses?job=${item.job_id}`} className="tap-min flex items-center justify-between gap-3 border-t border-[#3D3830] py-3"><span>{item.vendor} · {item.job_title}</span><span className="font-bold font-mono-num shrink-0">{money(item.amount)}</span></Link>)}</div>
+      </section>}
       {loading && <p className="text-[#6E675F] text-sm">Loading jobs…</p>}
 
       {STATUSES.map((s) => {

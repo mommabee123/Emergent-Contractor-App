@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useReceipts } from "../context/ReceiptContext";
+import { ExpenseList } from "../components/ExpenseList";
+import { billableAmount } from "../lib/expenses";
 import { api } from "../lib/api";
 import { money, usDate, STATUSES, profitColor } from "../lib/format";
 import { useAuth } from "../context/AuthContext";
@@ -14,6 +17,8 @@ const inputCls = "input-field";
 
 export default function JobDetail() {
   const { id } = useParams();
+  const [search] = useSearchParams();
+  const { revision } = useReceipts();
   const { user } = useAuth();
   const [job, setJob] = useState(null);
   const [rates, setRates] = useState([]);
@@ -30,7 +35,7 @@ export default function JobDetail() {
 
   useEffect(() => {
     load();
-  }, [id]);
+  }, [id, revision]);
 
   const changeStatus = async (s) => {
     setStatusOpen(false);
@@ -133,7 +138,7 @@ export default function JobDetail() {
         </div>
       </header>
 
-      <Tabs defaultValue="estimate">
+      <Tabs defaultValue={search.get("tab") === "expenses" ? "expenses" : "estimate"}>
         <TabsList className="w-full grid grid-cols-3 bg-[#0D0C0A] border border-[#2B2823] p-1 h-auto rounded-lg">
           {[
             ["estimate", "Estimate", "tab-estimate-trigger"],
@@ -499,113 +504,22 @@ function LogTab({ jobId, logs, hours, onChange }) {
   );
 }
 
-function ExpensesTab({ jobId, expenses, onChange }) {
-  const [form, setForm] = useState({
-    vendor: "",
-    date: new Date().toISOString().slice(0, 10),
-    amount: "",
-    category: "material",
-    description: "",
-    receipt_photo_id: null,
-  });
-  const fileRef = useRef(null);
-
-  const totalCost = expenses.reduce((s, e) => s + Number(e.amount), 0);
-
-  const onPickReceipt = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const { data } = await api.post("/files/upload", fd, { headers: { "Content-Type": "multipart/form-data" } });
-      setForm({ ...form, receipt_photo_id: data.id });
-      toast.success("Receipt attached");
-    } catch {
-      toast.error("Upload failed");
-    }
-  };
-
-  const submit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.post(`/jobs/${jobId}/expenses`, { ...form, amount: Number(form.amount) });
-      setForm({
-        vendor: "",
-        date: new Date().toISOString().slice(0, 10),
-        amount: "",
-        category: "material",
-        description: "",
-        receipt_photo_id: null,
-      });
-      toast.success("Expense added");
-      onChange();
-    } catch {
-      toast.error("Failed");
-    }
-  };
-
-  const del = async (id) => {
-    await api.delete(`/expenses/${id}`);
-    onChange();
-  };
-
-  return (
-    <div className="space-y-5">
-      <div>
-        <div className="label-up mb-1">Total job costs</div>
-        <div data-testid="expenses-total" className="font-mono-num font-extrabold text-[#F0EAE2]" style={{ fontSize: 32 }}>
-          {money(totalCost)}
-        </div>
+function ExpensesTab({ jobId, expenses }) {
+  const { openReceipt } = useReceipts();
+  const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const billable = expenses.reduce((sum, e) => sum + billableAmount(e), 0);
+  const nonBillable = expenses.reduce((sum, e) => sum + (e.billable === false ? Number(e.amount) : 0), 0);
+  return <div className="space-y-6">
+    <section data-testid="job-expense-summary" className="space-y-4">
+      <div><span className="label-up">Total costs</span><p data-testid="expenses-total" className="text-4xl font-bold font-mono-num">{money(total)}</p></div>
+      <div className="grid grid-cols-2 gap-4">
+        <div><span className="label-up">Of which billable · cost + markup</span><p data-testid="job-expenses-billable" className="text-2xl font-bold font-mono-num">{money(billable)}</p></div>
+        <div><span className="label-up">Non-billable costs</span><p data-testid="job-expenses-nonbillable" className="text-2xl font-bold font-mono-num">{money(nonBillable)}</p></div>
       </div>
-
-      <form onSubmit={submit} className="surface-card space-y-3">
-        <div className="grid grid-cols-2 gap-2">
-          <input required placeholder="Vendor" data-testid="expense-vendor" value={form.vendor} onChange={(e) => setForm({ ...form, vendor: e.target.value })} className={inputCls} />
-          <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={inputCls} />
-          <input required type="number" step="0.01" placeholder="Amount" data-testid="expense-amount" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className={inputCls + " font-mono-num"} />
-          <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
-            <option value="material">Material</option>
-            <option value="labor">Labor</option>
-            <option value="equipment">Equipment</option>
-            <option value="disposal">Disposal</option>
-          </select>
-        </div>
-        <input placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={inputCls} />
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={onPickReceipt} />
-        <div className="flex gap-2">
-          <button type="button" onClick={() => fileRef.current?.click()} className="btn-elev px-4">
-            <Camera className="w-4 h-4" />
-            {form.receipt_photo_id ? "Attached" : "Receipt"}
-          </button>
-          <button data-testid="add-expense-button" className="btn-bone flex-1">
-            Add expense
-          </button>
-        </div>
-      </form>
-
-      <div className="space-y-3">
-        {expenses.map((e) => (
-          <div key={e.id} data-testid={`expense-item-${e.id}`} className="surface-card flex items-start gap-3">
-            {e.receipt_photo_id && (
-              <AuthImage fileId={e.receipt_photo_id} className="w-14 h-14 object-cover rounded-lg border border-[#2B2823]" />
-            )}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline justify-between gap-2">
-                <div className="font-bold text-[#F0EAE2] truncate">{e.vendor}</div>
-                <div className="font-mono-num text-lg font-bold text-[#F0EAE2]">{money(e.amount)}</div>
-              </div>
-              <div className="label-up mb-0 mt-0.5">
-                {usDate(e.date)} · {e.category}
-              </div>
-              {e.description && <div className="text-sm text-[#A39990] mt-1">{e.description}</div>}
-            </div>
-            <button onClick={() => del(e.id)} className="text-[#6E675F] hover:text-[#E04838]">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+      <p data-testid="job-expenses-rebilling-note" className="text-[#A39990]">Billable amounts are ready for future rebilling, not invoiced revenue. All expenses reduce job profit at cost.</p>
+    </section>
+    <div className="flex gap-3"><button data-testid="job-capture-receipt" className="btn-bone flex-1" onClick={() => openReceipt()}><Camera className="w-4 h-4" />Receipt</button>
+      <button data-testid="add-expense-button" className="btn-elev flex-1" onClick={() => openReceipt({ manual: true, jobId })}>Add manually</button></div>
+    <ExpenseList expenses={expenses} />
+  </div>;
 }
